@@ -231,82 +231,97 @@
     </footer>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDNuFnE-K85NBrOrIISzLSq9ie4OhnmCuw", 
-            authDomain: "nextup-88c61.firebaseapp.com",
-            projectId: "nextup-88c61",
-            storageBucket: "nextup-88c61.firebasestorage.app",
-            messagingSenderId: "84271208628",
-            appId: "1:84271208628:web:c9c537fcfbb712a73cdfe1",
-            measurementId: "G-WE2SJ85HCC"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyDNuFnE-K85NBrOrIISzLSq9ie4OhnmCuw", 
+        authDomain: "nextup-88c61.firebaseapp.com",
+        projectId: "nextup-88c61",
+        storageBucket: "nextup-88c61.firebasestorage.app",
+        messagingSenderId: "84271208628",
+        appId: "1:84271208628:web:c9c537fcfbb712a73cdfe1",
+        measurementId: "G-WE2SJ85HCC"
+    };
 
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = app.auth();
-        const adminEmailSuffix = ".admin@eac.edu.ph"; 
-        
-        function clearErrors() {
-            document.querySelectorAll('.error-message').forEach(error => {
-                error.style.display = 'none';
-                error.textContent = '';
-            });
-            document.querySelectorAll('input').forEach(input => {
-                input.classList.remove('error');
-            });
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = app.auth();
+
+    const adminEmailSuffix = ".admin@eac.edu.ph"; 
+    
+    function clearErrors() {
+        document.querySelectorAll('.error-message').forEach(error => {
+            error.style.display = 'none';
+            error.textContent = '';
+        });
+        document.querySelectorAll('input').forEach(input => {
+            input.classList.remove('error');
+        });
+    }
+    
+    function showError(errorId, message) {
+        const errorElement = document.getElementById(errorId);
+        if (errorElement) {
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            
+            const inputId = errorId.replace('Error', '');
+            const inputElement = document.getElementById('login' + inputId.charAt(0).toUpperCase() + inputId.slice(1));
+            if (inputElement) {
+                inputElement.classList.add('error');
+            }
         }
-        
-        function showError(errorId, message) {
-            const errorElement = document.getElementById(errorId);
-            if (errorElement) {
-                errorElement.textContent = message;
-                errorElement.style.display = 'block';
-                
-                const inputId = errorId.replace('Error', '');
-                const inputElement = document.getElementById('login' + inputId.charAt(0).toUpperCase() + inputId.slice(1));
-                if (inputElement) {
-                    inputElement.classList.add('error');
+    }
+    
+    function handleAdminLogin(event) {
+        event.preventDefault();
+        clearErrors();
+
+        const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+        const password = document.getElementById('loginPassword').value;
+
+        if (!email || !password) {
+            showError('authError', 'Please enter both email and password.');
+            return;
+        }
+
+        if (!email.endsWith(adminEmailSuffix)) {
+            showError('authError', 'This login page is restricted to NEXTUP Administrators only.');
+            document.getElementById('loginEmail').classList.add('error');
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            showError('emailError', 'Please enter a valid email address.');
+            document.getElementById('loginEmail').classList.add('error');
+            return;
+        }
+   
+        auth.signInWithEmailAndPassword(email, password)
+            .then(() => {
+
+                window.location.href = 'admin-dashboard.html';
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                let errorMessage = 'Login failed. Please check your credentials.';
+
+                if (errorCode === 'auth/user-not-found' || errorCode === 'auth/wrong-password') {
+                    errorMessage = 'Invalid email or password.'; 
+                } else if (errorCode === 'auth/invalid-email') {
+                     errorMessage = 'The email address format is invalid.';
+                } else if (errorCode === 'auth/too-many-requests') {
+                    errorMessage = 'Too many failed attempts. Try again later.';
+                } else if (errorCode === 'auth/network-request-failed') {
+                    errorMessage = 'Network error. Please check your connection.';
+                } else {
+                    errorMessage = `Login error: ${error.message}. (Code: ${errorCode})`;
                 }
-            }
-        }
-        
-        function handleAdminLogin(event) {
-            event.preventDefault();
-            clearErrors();
-
-            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-            const password = document.getElementById('loginPassword').value;
-
-            if (!email || !password) {
-                 showError('authError', 'Please enter both email and password.');
-                 return;
-            }
-     
-            auth.signInWithEmailAndPassword(email, password)
-                .then(() => {
-                    window.location.href = 'admin-dashboard.html';
-                })
-                .catch((error) => {
-                    const errorCode = error.code;
-                    let errorMessage = 'Login failed. Please check your credentials.';
-
-                    if (errorCode === 'auth/user-not-found' || errorCode === 'auth/wrong-password') {
-                        errorMessage = 'Invalid email or password.'; 
-                    } else if (errorCode === 'auth/invalid-email') {
-                         errorMessage = 'The email address format is invalid.';
-                    } else if (errorCode === 'auth/too-many-requests') {
-                        errorMessage = 'Too many failed attempts. Try again later.';
-                    } else if (errorCode === 'auth/network-request-failed') {
-                        errorMessage = 'Network error. Please check your connection.';
-                    } else {
-                        errorMessage = `Login error: ${error.message}. (Code: ${errorCode})`;
-                    }
-                    
-                    showError('authError', errorMessage);
-                    console.error("Admin Login Error:", error);
-                });
-        }
-        
-        document.getElementById('loginForm').addEventListener('submit', handleAdminLogin);
-    </script>
+                
+                showError('authError', errorMessage);
+                console.error("Admin Login Error:", error);
+            });
+    }
+    
+    document.getElementById('loginForm').addEventListener('submit', handleAdminLogin);
+</script>
 </body>
 </html>
