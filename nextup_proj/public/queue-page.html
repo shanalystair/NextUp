@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXTUP - Queue Management</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="queue.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <header>    
+        <nav class="navbar">
+            <div class="top-border"></div>
+            <div class="nav-container">
+                <img src="image/Logo.png" alt="Logo" class="logo">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="queue-management.html">Queue</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="account-type.html">Sign Up</a></li>
+                    <li id="userNavItem">
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="queue-container">
+            <div class="queue-header">
+                <h1><span class="queue-service-name" id="serviceName">Loading...</span> Queue</h1>
+                <p class="queue-subtitle">Real-time queue management system</p>
+            </div>
+
+            <div class="queue-content">
+                
+                <div class="current-serving">
+                    <h2>📢 Now Serving</h2>
+                    <div class="current-number" id="currentNumber">
+                        <span class="number" id="servingNumber">---</span>
+                        <span class="student-name" id="currentStudent">No one currently being served</span>
+                    </div>
+                </div>
+
+                <div class="join-queue-form">
+                    <h2>Join Queue</h2>
+                    <form id="joinForm">
+                        <div class="form-group">
+                            <label for="studentId">Student ID</label>
+                            <input type="text" id="studentId" placeholder="Enter your student ID" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentName">Full Name</label>
+                            <input type="text" id="studentName" placeholder="Enter your full name" required>
+                        </div>
+                        <button type="submit" class="join-btn">Join Queue</button>
+                    </form>
+                </div>
+
+                <div class="waiting-list">
+                    <h2>⏳ Waiting List</h2>
+                    <div class="list-container">
+                        <div id="waitingList">
+                            <div class="empty-list">No one waiting in queue</div>
+                        </div>
+                    </div>
+                    <div class="queue-stats">
+                        <p><strong>Total Waiting:</strong> <span id="totalWaiting">0</span></p>
+                        <p><strong>Estimated Wait:</strong> <span id="estimatedWait">0 minutes</span></p>
+                    </div>
+                </div>
+
+                <div class="your-queue" id="yourQueueSection" style="display: none;">
+                    <h2>🎯 Your Queue</h2>
+                    <div class="your-number">
+                        <span class="number" id="yourNumberDisplay">---</span>
+                        <div class="queue-details">
+                            <p><strong>Status:</strong> <span id="yourStatus">Waiting...</span></p>
+                            <p><strong>Position:</strong> <span id="yourPosition">--</span></p>
+                            <p><strong>Estimated Wait:</strong> <span id="yourWait">-- minutes</span></p>
+                            <p><strong>Student:</strong> <span id="yourName">--</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-actions" id="adminSection" style="display: none;">
+                    <h2>🔧 Queue Management</h2>
+                    <div class="action-buttons">
+                        <button onclick="serveNext()" class="action-btn serve-btn">Serve Next Customer</button>
+                        <button onclick="completeServing()" class="action-btn complete-btn">Complete Current Service</button>
+                        <button onclick="resetQueue()" class="action-btn reset-btn">Reset Queue (DANGER)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Emilio Aguinaldo College - Cavite | NEXTUP Queue System</p>
+    </footer>
+
+   <script>
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDNuFnE-K85NBrOrIISzLSq9ie4OhnmCuw", 
+        authDomain: "nextup-88c61.firebaseapp.com",
+        projectId: "nextup-88c61",
+    };
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = app.firestore();
+
+
+    let currentServiceId = null;
+    let currentServingDocId = null; 
+    
+    let userTrackingDocId = localStorage.getItem('nextup_queue_doc_id'); 
+ 
+    const SERVICE_PREFIXES = {
+        'registrar': 'REG',
+        'guidance': 'GUI',
+        'it_office': 'IT',
+        'cashier': 'CASH', 
+        'clinic': 'CLI', 
+        'library': 'LIB'
+       
+    };
+    
+    
+    function formatQueueId(serviceId, number) {
+        const prefix = SERVICE_PREFIXES[serviceId.toLowerCase()] || 'Q';
+        
+        const paddedNumber = String(number).padStart(3, '0');
+        return `${prefix}${paddedNumber}`;
+    }
+    
+    async function joinQueue(event) {
+        event.preventDefault(); 
+
+        const studentId = document.getElementById('studentId').value.trim(); 
+        const fullName = document.getElementById('studentName').value.trim();   
+
+        if (!studentId || !fullName || !currentServiceId) {
+            alert("Please ensure Service ID is loaded and all fields are filled.");
+            return;
+        }
+        
+        if (userTrackingDocId) {
+            try {
+                
+                const docRef = db.collection(`queues/${currentServiceId}/waitingList`).doc(userTrackingDocId);
+                const doc = await docRef.get();
+
+                if (!doc.exists || doc.data().status === 'done') {
+                    
+                    localStorage.removeItem('nextup_queue_doc_id');
+                    userTrackingDocId = null; 
+                    console.log("Cleared stale user tracking ID from local storage.");
+                } else {
+                    
+                    alert("You are already in the queue. Your status is active. You can check your status below.");
+                    return;
+                }
+            } catch (e) {
+                
+                console.error("Error checking existing document in Firestore:", e);
+                alert("Error checking your existing queue status. Please check the console.");
+                return;
+            }
+        }
+        
+        try {
+            
+            const snapshot = await db.collection(`queues/${currentServiceId}/waitingList`)
+                .orderBy('queueNumber', 'desc') 
+                .limit(1)
+                .get();
+
+            let sequentialNumber = 1;
+            let isFirstInQueue = true; 
+            
+            if (!snapshot.empty) {
+                const lastEntry = snapshot.docs[0].data();
+                const lastQueueNumber = parseInt(lastEntry.queueNumber, 10);
+                
+                if (!isNaN(lastQueueNumber)) {
+                    sequentialNumber = lastQueueNumber + 1;
+                }
+                
+                const activeSnapshot = await db.collection(`queues/${currentServiceId}/waitingList`)
+                    .where('status', 'in', ['waiting', 'serving'])
+                    .limit(1) 
+                    .get();
+                    
+                isFirstInQueue = activeSnapshot.empty;
+            }
+
+
+            const initialStatus = isFirstInQueue ? 'serving' : 'waiting';
+
+            const queueEntry = {
+                studentId: studentId,
+                fullName: fullName,
+                serviceId: currentServiceId, 
+                queueNumber: sequentialNumber, 
+                status: initialStatus,         
+                joinedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            const docRef = await db.collection(`queues/${currentServiceId}/waitingList`).add(queueEntry);
+
+            console.log("Document successfully written with ID: ", docRef.id);
+            alert(`Successfully joined the queue! Your number is: ${formatQueueId(currentServiceId, sequentialNumber)}`);
+
+
+            userTrackingDocId = docRef.id;
+            localStorage.setItem('nextup_queue_doc_id', docRef.id);
+            
+            document.getElementById('joinForm').reset();
+
+        } catch (e) {
+            console.error("Error adding document: ", e);
+            alert("A critical error occurred while joining the queue. Check the console. (Index or Security Rule Error)");
+        }
+    }
+    
+    document.getElementById('joinForm').addEventListener('submit', joinQueue);
+
+
+    function loadQueueData(serviceId) {
+        if (!serviceId) return;
+
+        const serviceNameEl = document.getElementById('serviceName');
+        serviceNameEl.textContent = serviceId.charAt(0).toUpperCase() + serviceId.slice(1); 
+
+ 
+        db.collection(`queues/${serviceId}/waitingList`)
+        .where('status', 'in', ['waiting', 'serving'])
+        .orderBy('queueNumber', 'asc') 
+        .onSnapshot((snapshot) => {
+            
+            let waitingListHtml = '';
+            let totalWaitingCount = 0;
+            let nowServingEntry = null;
+
+            document.getElementById('yourQueueSection').style.display = 'none';
+
+            const servingDocs = snapshot.docs.filter(doc => doc.data().status === 'serving');
+            const waitingDocs = snapshot.docs.filter(doc => doc.data().status === 'waiting');
+            
+            if (servingDocs.length > 0) {
+                const doc = servingDocs[0];
+                nowServingEntry = doc.data();
+                currentServingDocId = doc.id; 
+            }
+
+            waitingDocs.forEach((doc, index) => {
+                const data = doc.data();
+                const queueDisplayNumber = formatQueueId(serviceId, data.queueNumber);
+                
+                waitingListHtml += `
+                    <div class="waiting-item">
+                        <span class="position">${index + 1}</span>
+                        <span class="queue-num">${queueDisplayNumber}</span>
+                        <span class="name">${data.fullName} (${data.studentId})</span>
+                    </div>`;
+                totalWaitingCount++;
+            });
+
+            snapshot.docs.forEach((doc) => {
+                const data = doc.data();
+                if (userTrackingDocId && doc.id === userTrackingDocId) {
+                    const userStatus = data.status;
+                    const queueDisplayNumber = formatQueueId(serviceId, data.queueNumber);
+
+                    document.getElementById('yourQueueSection').style.display = 'block';
+                    document.getElementById('yourNumberDisplay').textContent = queueDisplayNumber;
+                    document.getElementById('yourStatus').textContent = userStatus.toUpperCase();
+                    document.getElementById('yourName').textContent = data.fullName;
+
+                    if (userStatus === 'serving') {
+                        document.getElementById('yourPosition').textContent = 'NEXT!';
+                        document.getElementById('yourWait').textContent = 'NOW!';
+                    } else if (userStatus === 'waiting') {
+                        const userIndex = waitingDocs.findIndex(d => d.id === doc.id);
+                        const userPosition = userIndex !== -1 ? userIndex + 1 : '--';
+                        
+                        document.getElementById('yourPosition').textContent = userPosition;
+                        document.getElementById('yourWait').textContent = userPosition !== '--' ? `${userPosition * 5} minutes` : '-- minutes';
+                    }
+                    return; 
+                }
+            });
+
+            if (nowServingEntry) {
+                document.getElementById('servingNumber').textContent = formatQueueId(serviceId, nowServingEntry.queueNumber);
+                document.getElementById('currentStudent').textContent = `${nowServingEntry.fullName} (${nowServingEntry.studentId})`;
+            } else {
+                document.getElementById('servingNumber').textContent = '---';
+                document.getElementById('currentStudent').textContent = 'No one currently being served';
+                currentServingDocId = null; 
+            }
+
+            const listContainerEl = document.getElementById('waitingList');
+            if (waitingListHtml) {
+                listContainerEl.innerHTML = waitingListHtml;
+            } else {
+                 listContainerEl.innerHTML = '<div class="empty-list">No one waiting in queue</div>';
+            }
+           
+            document.getElementById('totalWaiting').textContent = totalWaitingCount;
+            const estimatedWait = totalWaitingCount * 5; 
+            document.getElementById('estimatedWait').textContent = `${estimatedWait} minutes`;
+        });
+    }
+    
+    
+    
+
+    async function serveNext() {
+        if (!currentServiceId) return alert("Service not loaded.");
+
+        try {
+            
+            if (currentServingDocId) {
+                 await db.collection(`queues/${currentServiceId}/waitingList`).doc(currentServingDocId).update({
+                    status: 'done',
+                    completedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+           
+            const waitingSnapshot = await db.collection(`queues/${currentServiceId}/waitingList`)
+                .where('status', '==', 'waiting')
+                .orderBy('queueNumber', 'asc') 
+                .limit(1)
+                .get();
+
+            if (waitingSnapshot.empty) {
+                alert("The waiting list is empty.");
+                currentServingDocId = null; 
+                return;
+            }
+
+            const nextCustomerDoc = waitingSnapshot.docs[0];
+            const queueNum = nextCustomerDoc.data().queueNumber;
+            
+            await nextCustomerDoc.ref.update({
+                status: 'serving',
+                servedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            alert(`Serving next: ${formatQueueId(currentServiceId, queueNum)} - ${nextCustomerDoc.data().fullName}`);
+            currentServingDocId = nextCustomerDoc.id; 
+
+        } catch (e) {
+            console.error("Error serving next customer:", e);
+            alert("Error serving next customer. Check console and security rules (potential 403 error).");
+        }
+    }
+
+    async function completeServing() {
+        if (!currentServiceId) return alert("Service not loaded.");
+        
+        let servingDocIdToComplete = currentServingDocId;
+
+        if (!servingDocIdToComplete) {
+             const servingSnapshot = await db.collection(`queues/${currentServiceId}/waitingList`)
+                .where('status', '==', 'serving')
+                .limit(1)
+                .get();
+                
+            if (!servingSnapshot.empty) {
+                servingDocIdToComplete = servingSnapshot.docs[0].id;
+            }
+        }
+
+        if (!servingDocIdToComplete) {
+            alert("No one is currently being served to complete.");
+            return;
+        }
+
+        try {
+            await db.collection(`queues/${currentServiceId}/waitingList`).doc(servingDocIdToComplete).update({
+                status: 'done',
+                completedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+    
+            if (servingDocIdToComplete === userTrackingDocId) {
+                localStorage.removeItem('nextup_queue_doc_id');
+                userTrackingDocId = null;
+            }
+            
+            currentServingDocId = null;
+
+            alert(`Service completed for ${servingDocIdToComplete}`);
+
+        } catch (e) {
+            console.error("Error completing service:", e);
+            alert("Error completing service. Check console (potential 403 error).");
+        }
+    }
+    
+    function resetQueue() {
+        alert("WARNING: Queue reset requires a secure backend function to safely delete all documents. This button is currently non-functional.");
+        console.log("Queue reset requested. Not executed for safety reasons.");
+    }
+
+    function toggleAdmin() {
+        const adminSection = document.getElementById('adminSection');
+        if (adminSection.style.display === 'none') {
+            adminSection.style.display = 'block';
+            console.log("Admin Panel Activated! (Use Ctrl+Shift+A to toggle off)");
+        } else {
+            adminSection.style.display = 'none';
+            console.log("Admin Panel Deactivated.");
+        }
+    }
+
+
+    window.onload = function() {
+
+        function getServiceIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const serviceId = urlParams.get('serviceId') || urlParams.get('service'); 
+
+            if (serviceId) {
+                return serviceId;
+            } else {
+                console.error("Queue Page Error: Service ID not found.");
+                document.querySelector('.queue-header h1').textContent = "Error Loading Queue";
+                document.querySelector('.queue-subtitle').textContent = "Please return to the Queue Management page and select a service.";
+                document.querySelector('.join-btn').disabled = true; 
+                return null;
+            }
+        }
+        
+        currentServiceId = getServiceIdFromUrl();
+        if (currentServiceId) {
+            loadQueueData(currentServiceId); 
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                toggleAdmin();
+            }
+        });
+    };
+
+    window.serveNext = serveNext;
+    window.completeServing = completeServing;
+    window.resetQueue = resetQueue; 
+    window.toggleAdmin = toggleAdmin;
+</script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - NEXTUP EAC-C Queue System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+   
+        .about-page {
+            background: #f9f9f9;
+            min-height: 100vh;
+        }
+        
+        .about-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+        
+        .about-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .about-header h1 {
+            font-size: 48px;
+            color: #c3141c;
+            margin-bottom: 20px;
+        }
+        
+        .about-header p {
+            font-size: 18px;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            margin-bottom: 60px;
+        }
+        
+        .about-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .about-card h2 {
+            color: #c3141c;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        
+        .about-card p {
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        
+        .mission-vision {
+            background: #fff5f5;
+            border-left: 5px solid #c3141c;
+        }
+        
+        .features-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .features-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            color: #555;
+        }
+        
+        .features-list li:before {
+            content: "✓";
+            color: #28a745;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .team-section {
+            text-align: center;
+            margin-top: 60px;
+        }
+        
+        .team-section h2 {
+            color: #c3141c;
+            margin-bottom: 40px;
+            font-size: 36px;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .team-member {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .member-role {
+            color: #c3141c;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+        
+        .back-home {
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        .back-home a {
+            color: #c3141c;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 12px 30px;
+            border: 2px solid #c3141c;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .back-home a:hover {
+            background: #c3141c;
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .about-header h1 {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+
+<body class="about-page">
+    <header>    
+        <nav class="navbar">
+            <div class="top-border"></div>
+            <div class="nav-container">
+                <img src="image/Logo.png" alt="Logo" class="logo">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="queue-management.html">Queue</a></li>
+                    <li><a href="about.html" class="active">About</a></li>
+                    <li><a href="account-type.html">Sign Up</a></li>
+                    <li><a href="login.html">Log In</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="about-container">
+            <div class="about-header">
+                <h1>About NEXTUP Queue System</h1>
+                <p>Revolutionizing the queuing experience at Emilio Aguinaldo College - Cavite campus with smart, efficient, and user-friendly queue management.</p>
+            </div>
+
+            <div class="about-content">
+                <div class="about-card">
+                    <h2>What is NEXTUP?</h2>
+                    <p>NEXTUP is an innovative digital queue management system designed specifically for Emilio Aguinaldo College - Cavite. It eliminates long waiting times, reduces physical congestion, and provides a seamless experience for students, faculty, and staff.</p>
+                    <p>Our system allows users to join virtual queues from anywhere, receive real-time updates on their position, and get notified when it's their turn to be served.</p>
+                </div>
+                
+                <div class="about-card mission-vision">
+                    <h2>Our Mission & Vision</h2>
+                    <p><strong>Mission:</strong> To provide a stress-free, efficient, and modern queuing solution that enhances the campus experience for every member of the EAC-C community.</p>
+                    <p><strong>Vision:</strong> To be the leading digital queue management system in educational institutions, setting the standard for smart campus solutions.</p>
+                </div>
+            </div>
+
+            <div class="about-card">
+                <h2>Key Features</h2>
+                <ul class="features-list">
+                    <li><strong>Real-time Queue Updates:</strong> See your exact position in line and estimated wait time</li>
+                    <li><strong>Multi-service Support:</strong> Queue for Cashier, Registrar, Guidance, Library, Clinic, and IT Office</li>
+                    <li><strong>Mobile-Friendly:</strong> Access the queue system from any device</li>
+                    <li><strong>Smart Notifications:</strong> Get alerted when your turn is approaching</li>
+                    <li><strong>Admin Dashboard:</strong> Comprehensive tools for service staff to manage queues efficiently</li>
+                    <li><strong>Secure Authentication:</strong> Protected student accounts with encrypted data</li>
+                    <li><strong>Analytics & Reports:</strong> Track queue performance and service efficiency</li>
+                    <li><strong>Zero Physical Contact:</strong> Reduce crowding and maintain social distancing</li>
+                </ul>
+            </div>
+
+            <div class="team-section">
+                <h2>Developed By</h2>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <h3>EAC-C COMSCI Department</h3>
+                        <p class="member-role">Development Team</p>
+                        <p>Creating innovative solutions for campus efficiency</p>
+                    </div>
+                    <div class="team-member">
+                        <h3>Student Affairs Office</h3>
+                        <p class="member-role">Project Sponsors</p>
+                        <p>Dedicated to improving student experience</p>
+                    </div>
+                    <div class="team-member">
+                        <h3>Administration</h3>
+                        <p class="member-role">Strategic Support</p>
+                        <p>Supporting digital transformation initiatives</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="back-home">
+                <a href="index.html">← Back to Home</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Emilio Aguinaldo College - Cavite | NEXTUP Queue Management System</p>
+    </footer>
+</body>
+</html>

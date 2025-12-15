@@ -1,0 +1,334 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Top red border */
+.top-border {
+    width: 100%;
+    height: 8px;
+    background-color: #c3141c;
+}
+
+/* Navbar container */
+.navbar {
+    width: 100%;
+    background: rgba(202, 135, 135, 0.816); /* semi-transparent */
+    backdrop-filter: blur(10px);
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+}
+
+/* Logo */
+.logo {
+    height: 60px;
+}
+
+/* Nav links */
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 40px;
+}
+
+.nav-links a {
+    color: white;
+    font-size: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    position: relative;
+    padding-bottom: 4px;
+}
+
+/* Hover underline animation */
+.nav-links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    height: 3px;
+    background-color: white;
+    transition: 0.3s ease;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .nav-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .nav-links {
+        gap: 25px;
+    }
+}
+
+/* HERO BACKGROUND SECTION */
+.hero-section {
+    position: relative;
+    width: 100%;
+    height: 100vh; /* Full screen height */
+    background: url("image/Background.png") no-repeat center center/cover;
+}
+
+/* RED FADE OVERLAY */
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        rgba(170, 0, 0, 0.716) 0%,   /* strong red at top */
+        rgba(170, 0, 0, 0.608) 20%, /* fade */
+        rgba(145, 4, 4, 0.410) 60%,    /* darker lower area */
+        rgba(0, 0, 0, 0.1) 100%    /* light at bottom */
+    );
+    z-index: 1;
+}
+
+/* HERO TEXT */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    color: white;
+    padding: 150px 70px;
+    max-width: 800px;
+}
+
+.hero-content h1 {
+    font-size: 50px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.hero-content h2 {
+    font-size: 45px;
+    font-weight: 800;
+    text-decoration: underline 4px solid #66aaff;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+    font-size: 18px;
+    line-height: 1.6;
+    max-width: 650px;
+}
+
+.section-header {
+    position: relative;
+    text-align: center;
+    padding: 120px 20px 80px;  /* space for the background */
+    overflow: hidden;          /* hides the overflow of the image */
+}
+
+.second-background {
+    position: absolute;
+    top: -120px;               /* adjust to move image up/down */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 130%;               /* making it stretch wider */
+    z-index: -1;               /* pushes behind the text */
+    pointer-events: none;
+}
+
+.section-header {
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+    margin: 60px 0 30px 0;
+    color: #222;
+}
+
+.guide-box {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin: 80px;
+}
+
+.guide-box > div {
+    flex: 1 1 calc(50% - 20px);
+}
+
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&family=Poppins:wght@500&display=swap');
+
+/* Rectangle container */
+.info-box {
+    width: 605px;
+    height: 230px;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 50px 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.201);
+}
+
+/* Header 2 text (Inter Semi-Bold, 32px) */
+.title-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 32px;
+    font-weight: 600;   /* Semi-Bold */
+    text-align: center;
+    margin: 0 0 15px 0;
+    color: #000;
+}
+
+/* Header 3 text (Poppins Medium, 20px) */
+.subtitle-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 500;  /* Medium */
+    text-align: center;
+    margin: 0;
+    color: #333;
+}
+
+.project {
+    width: 300px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    padding-bottom: 50px;
+}
+
+.info-box2 {
+    width: 605px;
+    height: 230px;
+    background: #ffffff;
+    border-radius: 20px;
+    padding-left: 100px;
+    padding: 50px 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.201);
+}
+
+/* Header 2 text (Inter Semi-Bold, 32px) */
+.title-text2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 32px;
+    font-weight: 600;   /* Semi-Bold */
+    text-align: center;
+    margin: 0 0 15px 0;
+    color: #000;
+}
+
+/* Header 3 text (Poppins Medium, 20px) */
+.subtitle-text2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 500;  /* Medium */
+    text-align: center;
+    margin: 0;
+    color: #333;
+}
+
+.cashier {
+    width: 300px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    padding-bottom: 50px;
+}
+
+.info-box3 {
+    width: 605px;
+    height: 230px;
+    background: #ffffff;
+    border-radius: 20px;
+    padding-left: 100px;
+    padding: 50px 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.201);
+}
+
+/* Header 2 text (Inter Semi-Bold, 32px) */
+.title-text3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 32px;
+    font-weight: 600;   /* Semi-Bold */
+    text-align: center;
+    margin: 0 0 15px 0;
+    color: #000;
+}
+
+/* Header 3 text (Poppins Medium, 20px) */
+.subtitle-text3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 500;  /* Medium */
+    text-align: center;
+    margin: 0;
+    color: #333;
+}
+
+.milestones {
+    width: 300px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    padding-bottom: 50px;
+}
+.header-text {
+    font-size: 48px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 15px;
+}
+
+.header-subtext {
+    font-size: 18px;
+    color: #555;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Make sure #queue-section is visible */
+#queue-section {
+    display: block;
+    text-align: center;
+    padding: 50px 20px;
+    background: #f9f9f9;
+    margin-top: 40px;
+}
+
+#queue-section h2 {
+    font-size: 36px;
+    color: #c3141c;
+    margin-bottom: 30px;
+}
+
+/* Fix for guide-box alignment */
+.guide-box > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Make sure images don't overflow */
+.project, .cashier, .milestones {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Footer styling */
+footer {
+    text-align: center;
+    padding: 20px;
+    background: #333;
+    color: white;
+    margin-top: 50px;
+}

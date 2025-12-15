@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXTUP - Queue Management</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="queue.css">
+    <style>
+       
+        .queue-management-page {
+            background: #f9f9f9;
+            min-height: 100vh;
+        }
+        
+        .queue-management-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+        
+        .queue-management-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .queue-management-header h1 {
+            font-size: 48px;
+            color: #c3141c;
+            margin-bottom: 15px;
+        }
+        
+        .queue-management-header p {
+            font-size: 18px;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .queue-services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .service-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .service-icon {
+            font-size: 50px;
+            margin-bottom: 20px;
+            color: #c3141c;
+        }
+        
+        .service-card h3 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .service-card p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .service-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #c3141c;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .service-btn:hover {
+            background: #a01015;
+        }
+        
+        .service-btn.disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .service-btn.disabled:hover {
+            background: #ccc;
+        }
+        
+        .quick-check-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .quick-check-section h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        .check-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .check-btn {
+            padding: 15px 30px;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: 600;
+        }
+        
+        .check-btn:hover {
+            background: #0052a3;
+        }
+        
+        .check-btn.disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .check-btn.disabled:hover {
+            background: #ccc;
+        }
+        
+        .back-home {
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .back-home a {
+            color: #c3141c;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .back-home a:hover {
+            text-decoration: underline;
+        }
+        
+        .login-required {
+            text-align: center;
+            margin-top: 30px;
+            padding: 25px;
+            background: #fff8e1;
+            border-radius: 15px;
+            border-left: 5px solid #ff9800;
+        }
+        
+        .login-required h3 {
+            color: #ff9800;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+        
+        .login-required p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .login-btn-small {
+            display: inline-block;
+            padding: 10px 25px;
+            background: #c3141c;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .login-btn-small:hover {
+            background: #a01015;
+        }
+        
+        .user-welcome {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #e8f4ff;
+            border-radius: 15px;
+            border-left: 5px solid #0066cc;
+        }
+        
+        .user-welcome h3 {
+            color: #0066cc;
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+        
+        .user-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .user-detail {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .user-detail span {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: #c82333;
+        }
+        
+        @media (max-width: 768px) {
+            .queue-management-header h1 {
+                font-size: 36px;
+            }
+            
+            .queue-services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .check-buttons {
+                flex-direction: column;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        .modal-content h2 {
+            font-size: 28px;
+            color: #c3141c;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+ 
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 30px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .close-btn:hover {
+            color: #c3141c;
+        }
+        
+        .queue-display-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .current-serving, .waiting-list, .your-queue-status {
+            background: #f4f4f4;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+        }
+
+        .current-serving h3, .waiting-list h3, .your-queue-status h3 {
+            font-size: 22px;
+            color: #0066cc; 
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .current-serving h3 { color: #c3141c; } 
+        .waiting-list h3 { color: #ffc107; } 
+        .your-queue-status h3 { color: #007bff; } 
+    
+        .current-number {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .current-number .number {
+            font-size: 40px;
+            font-weight: 700;
+            color: #c3141c;
+            display: block;
+        }
+        
+        .current-number .student-name {
+            font-size: 16px;
+            color: #666;
+            margin-top: 5px;
+            display: block;
+            word-break: break-word;
+        }
+        
+        .waiting-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 10px;
+            border-bottom: 1px dashed #ddd;
+            font-size: 15px;
+        }
+
+        .waiting-item:last-child {
+            border-bottom: none;
+        }
+    
+        .waiting-item .position {
+            font-weight: 700;
+            color: #ffc107; 
+            width: 30px;
+            text-align: center;
+        }
+ 
+        
+        .waiting-item .queue-num {
+            font-weight: 600;
+            color: #333;
+            flex-grow: 1;
+        }
+        
+        .waiting-item .name {
+            color: #666;
+            width: 150px;
+            text-align: right;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .empty-list-modal {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-style: italic;
+        }
+
+        .queue-stats-modal {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+
+        .queue-stats-modal p {
+            font-size: 16px;
+            margin: 5px 0;
+            font-weight: 500;
+        }
+
+        .queue-stats-modal strong {
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .your-number-modal {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+       
+        .your-number-modal .number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #007bff; 
+        }
+        
+        
+        .queue-details p {
+            margin: 5px 0;
+            font-size: 15px;
+        }
+        
+        .queue-details span {
+            font-weight: 600;
+            color: #333;
+        }
+
+        @media (max-width: 600px) {
+            .waiting-item .name {
+                display: none; 
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+        }
+    </style>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+</head>
+
+<body class="queue-management-page">
+    <header>    
+        <nav class="navbar">
+            <div class="top-border"></div>
+            <div class="nav-container">
+                <img src="image/Logo.png" alt="Logo" class="logo">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="queue-management.html" class="active">Queue</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="account-type.html">Sign Up</a></li>
+                    <li><a href="login.html">Log In</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="queue-management-container">
+            <div id="userWelcome" class="user-welcome" style="display: none;">
+                <h3>Welcome to NEXTUP Queue System</h3>
+                <p>You're logged in and ready to join queues. Select a service below.</p>
+                <div class="user-info">
+                    <div class="user-detail">
+                        <span id="userName">Loading...</span>
+                    </div>
+                    <div class="user-detail">
+                        ID: <span id="userId">Loading...</span>
+                    </div>
+                    <div class="user-detail">
+                        Account: <span id="userType">Loading...</span>
+                    </div>
+                    <button onclick="logout()" class="logout-btn">Log Out</button>
+                </div>
+            </div>
+
+            <div id="loginRequired" class="login-required" style="display: none;">
+                <h3>⚠️ Login Required</h3>
+                <p>You need to log in to access the queue management system. Please sign in to join queues or check your status.</p>
+                <a href="login.html" class="login-btn-small">Log In Now</a>
+                <p style="margin-top: 15px; font-size: 14px;">
+                    Don't have an account? <a href="account-type.html" style="color: #c3141c; font-weight: 600;">Sign Up Here</a>
+                </p>
+            </div>
+
+            <div class="queue-management-header">
+                <h1>NEXTUP Queue Management</h1>
+                <p>Select a service to join the queue or check current wait times. Our system ensures fair and efficient service for all students and staff.</p>
+            </div>
+
+            <div class="queue-services-grid" id="servicesGrid">
+                </div>
+
+            <div class="quick-check-section">
+                <h2>Quick Queue Check</h2>
+                <div class="check-buttons" id="checkButtons">
+                    </div>
+            </div>
+
+            <div class="back-home">
+                <a href="index.html">← Back to Home</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Emilio Aguinaldo College - Cavite | NEXTUP Queue System</p>
+    </footer>
+
+    <div id="queueStatusModal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Queue Status for [Service Name]</h2>
+
+            <div class="queue-display-wrapper">
+
+                <div class="current-serving">
+                    <h3>Now Serving</h3>
+                    <div class="current-number">
+                        <span class="number" id="modalServingNumber">---</span>
+                        <span class="student-name" id="modalCurrentStudent">No one currently being served</span>
+                    </div>
+                </div>
+
+                <div class="waiting-list">
+                    <h3>Waiting List</h3>
+                    <div class="list-container">
+                        <div id="modalWaitingList">
+                            <div class="empty-list-modal">No one waiting in queue</div>
+                        </div>
+                    </div>
+                    <div class="queue-stats-modal">
+                        <p><strong>Total Waiting:</strong> <span id="modalTotalWaiting">0</span></p>
+                        <p><strong>Estimated Wait:</strong> <span id="modalEstimatedWait">0 minutes</span></p>
+                    </div>
+                </div>
+                
+                <div class="your-queue-status" id="modalYourQueueSection" style="display: none;">
+                    <h3>Your Queue Status</h3>
+                    <div class="your-number-modal">
+                        <span class="number" id="modalYourNumberDisplay">---</span>
+                        <div class="queue-details">
+                            <p><strong>Status:</strong> <span id="modalYourStatus">Waiting...</span></p>
+                            <p><strong>Position:</strong> <span id="modalYourPosition">--</span></p>
+                            <p><strong>Estimated Wait:</strong> <span id="modalYourWait">-- minutes</span></p>
+                            <p><strong>Student:</strong> <span id="modalYourName">--</span></p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <script>
+       
+        const firebaseConfig = {
+            apiKey: "AIzaSyDNuFnE-K85NBrOrIISzLSq9ie4OhnmCuw", 
+            authDomain: "nextup-88c61.firebaseapp.com",
+            projectId: "nextup-88c61",
+        };
+    
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = app.firestore();
+    
+      
+        let currentUser = null;
+        let queueStatusUnsubscribe = null; 
+        let userTrackingDocId = localStorage.getItem('nextup_queue_doc_id'); 
+        
+        const SERVICE_PREFIXES = {
+            'registrar': 'REG',
+            'guidance': 'GUI',
+            'it_office': 'IT',
+            'cashier': 'CASH', 
+            'clinic': 'CLI', 
+            'library': 'LIB'
+        };
+        
+        function formatQueueId(serviceId, number) {
+            const prefix = SERVICE_PREFIXES[serviceId.toLowerCase()] || 'Q';
+            const paddedNumber = String(number).padStart(3, '0');
+            return `${prefix}${paddedNumber}`;
+        }
+    
+        window.onload = function() {
+            checkLoginStatus();
+
+            window.joinQueue = joinQueue;
+            window.checkQueueStatus = checkQueueStatus;
+            window.requireLogin = requireLogin;
+            window.logout = logout;
+            window.closeModal = closeModal;
+        };
+        
+        function checkLoginStatus() {
+            const userData = localStorage.getItem('nextup_current_user');
+            if (userData) {
+                currentUser = JSON.parse(userData);
+                showUserWelcome();
+                enableQueueFeatures();
+            } else {
+                showLoginRequired();
+                disableQueueFeatures();
+            }
+        }
+        
+        function showUserWelcome() {
+            document.getElementById('userWelcome').style.display = 'block';
+            document.getElementById('loginRequired').style.display = 'none';
+            
+            document.getElementById('userName').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+            document.getElementById('userId').textContent = currentUser.studentId || currentUser.employeeId || 'N/A';
+            document.getElementById('userType').textContent = currentUser.accountType === 'student' ? 'Student' : 'Personnel';
+        }
+        
+        function showLoginRequired() {
+            document.getElementById('userWelcome').style.display = 'none';
+            document.getElementById('loginRequired').style.display = 'block';
+        }
+        
+        function enableQueueFeatures() {
+            const services = [
+                { id: 'cashier', name: 'Cashier', icon: '💰', desc: 'Payment transactions, tuition fees, and financial matters.' },
+                { id: 'registrar', name: 'Registrar', icon: '📋', desc: 'Academic records, enrollment, grades, and transcripts.' },
+                { id: 'guidance', name: 'Guidance Office', icon: '🧠', desc: 'Counseling services, career advice, and student support.' },
+                { id: 'library', name: 'Library', icon: '📚', desc: 'Book borrowing, research assistance, and study resources.' },
+                { id: 'clinic', name: 'Clinic', icon: '🏥', desc: 'Medical services, health check-ups, and first aid.' },
+                { id: 'it_office', name: 'IT Office', icon: '💻', desc: 'Technical support, computer issues, and network problems.' }
+            ];
+            
+
+            const servicesGrid = document.getElementById('servicesGrid');
+            servicesGrid.innerHTML = services.map(service => `
+                <div class="service-card" onclick="joinQueue('${service.id}')">
+                    <div class="service-icon">${service.icon}</div>
+                    <h3>${service.name}</h3>
+                    <p>${service.desc}</p>
+                    <a href="javascript:void(0)" class="service-btn" onclick="joinQueue('${service.id}')">Join ${service.name} Queue</a>
+                </div>
+            `).join('');
+            
+
+            const checkButtons = document.getElementById('checkButtons');
+ 
+            checkButtons.innerHTML = services.map(service => `
+                <button onclick="checkQueueStatus('${service.id}', '${service.name}')" class="check-btn">Check ${service.name} Queue</button>
+            `).join('');
+        }
+        
+        function disableQueueFeatures() {
+            const services = [
+                { id: 'cashier', name: 'Cashier', icon: '💰', desc: 'Payment transactions, tuition fees, and financial matters.' },
+                { id: 'registrar', name: 'Registrar', icon: '📋', desc: 'Academic records, enrollment, grades, and transcripts.' },
+                { id: 'guidance', name: 'Guidance Office', icon: '🧠', desc: 'Counseling services, career advice, and student support.' },
+                { id: 'library', name: 'Library', icon: '📚', desc: 'Book borrowing, research assistance, and study resources.' },
+                { id: 'clinic', name: 'Clinic', icon: '🏥', desc: 'Medical services, health check-ups, and first aid.' },
+                { id: 'it_office', name: 'IT Office', icon: '💻', desc: 'Technical support, computer issues, and network problems.' }
+            ];
+            
+            const servicesGrid = document.getElementById('servicesGrid');
+            servicesGrid.innerHTML = services.map(service => `
+                <div class="service-card" onclick="requireLogin()">
+                    <div class="service-icon">${service.icon}</div>
+                    <h3>${service.name}</h3>
+                    <p>${service.desc}</p>
+                    <a href="javascript:void(0)" class="service-btn disabled">Login Required</a>
+                </div>
+            `).join('');
+
+            const checkButtons = document.getElementById('checkButtons');
+         
+            checkButtons.innerHTML = services.map(service => `
+                <button onclick="checkQueueStatus('${service.id}', '${service.name}')" class="check-btn">Check ${service.name} Queue</button>
+            `).join('');
+        }
+        
+        function joinQueue(service) {
+            if (!currentUser) {
+                requireLogin();
+                return;
+            }
+            
+            window.location.href = `queue-page.html?service=${service}`;
+        }
+        
+        function requireLogin() {
+            alert('Please log in to join a queue.');
+            window.location.href = 'login.html';
+        }
+        
+        function logout() {
+            if (confirm('Are you sure you want to log out?')) {
+                localStorage.removeItem('nextup_current_user');
+                localStorage.removeItem('nextup_queue_doc_id'); 
+                currentUser = null;
+                alert('✅ Logged out successfully.');
+                window.location.href = 'queue-management.html';
+            }
+        }
+        
+        
+        function openModal(serviceId, serviceName) {
+            document.getElementById('modalTitle').textContent = `Queue Status for ${serviceName}`;
+            document.getElementById('queueStatusModal').style.display = 'flex';
+            loadQueueStatusModal(serviceId);
+        }
+
+        function closeModal(event) {
+
+            if (event && event.target.id !== 'queueStatusModal' && event.target.className !== 'close-btn') {
+                return; 
+            }
+            
+            document.getElementById('queueStatusModal').style.display = 'none';
+
+            if (queueStatusUnsubscribe) {
+                queueStatusUnsubscribe();
+                queueStatusUnsubscribe = null;
+                console.log("Firebase listener unsubscribed.");
+            }
+        }
+
+        function checkQueueStatus(serviceId, serviceName) {
+            openModal(serviceId, serviceName);
+        }
+        
+        function loadQueueStatusModal(serviceId) {
+            if (queueStatusUnsubscribe) {
+                queueStatusUnsubscribe(); 
+            }
+            
+            userTrackingDocId = localStorage.getItem('nextup_queue_doc_id'); 
+
+            queueStatusUnsubscribe = db.collection(`queues/${serviceId}/waitingList`)
+            .where('status', 'in', ['waiting', 'serving'])
+            .orderBy('queueNumber', 'asc') 
+            .onSnapshot((snapshot) => {
+                
+                let waitingListHtml = '';
+                let totalWaitingCount = 0;
+                let nowServingEntry = null;
+
+                document.getElementById('modalYourQueueSection').style.display = 'none';
+
+                const servingDocs = snapshot.docs.filter(doc => doc.data().status === 'serving');
+                const waitingDocs = snapshot.docs.filter(doc => doc.data().status === 'waiting');
+                
+                if (servingDocs.length > 0) {
+                    const doc = servingDocs[0];
+                    nowServingEntry = doc.data();
+                }
+
+                waitingDocs.forEach((doc, index) => {
+                    const data = doc.data();
+                    const queueDisplayNumber = formatQueueId(serviceId, data.queueNumber);
+                    
+                    waitingListHtml += `
+                        <div class="waiting-item">
+                            <span class="position">${index + 1}</span>
+                            <span class="queue-num">${queueDisplayNumber}</span>
+                            <span class="name">${data.fullName}</span>
+                        </div>`;
+                    totalWaitingCount++;
+                });
+
+                if (currentUser && userTrackingDocId) {
+                    snapshot.docs.forEach((doc) => {
+                        const data = doc.data();
+
+                        if (doc.id === userTrackingDocId && data.serviceId === serviceId) {
+                            const userStatus = data.status;
+                            const queueDisplayNumber = formatQueueId(serviceId, data.queueNumber);
+
+                            document.getElementById('modalYourQueueSection').style.display = 'block';
+                            document.getElementById('modalYourNumberDisplay').textContent = queueDisplayNumber;
+                            document.getElementById('modalYourStatus').textContent = userStatus.toUpperCase();
+                            document.getElementById('modalYourName').textContent = data.fullName;
+
+                            if (userStatus === 'serving') {
+                                document.getElementById('modalYourPosition').textContent = 'NEXT!';
+                                document.getElementById('modalYourWait').textContent = 'NOW!';
+                            } else if (userStatus === 'waiting') {
+                                const userIndex = waitingDocs.findIndex(d => d.id === doc.id);
+                                const userPosition = userIndex !== -1 ? userIndex + 1 : '--';
+                                
+                                document.getElementById('modalYourPosition').textContent = userPosition;
+                                document.getElementById('modalYourWait').textContent = userPosition !== '--' ? `${userPosition * 5} minutes` : '-- minutes';
+                            }
+                            return; 
+                        }
+                    });
+                }
+
+
+                if (nowServingEntry) {
+                    document.getElementById('modalServingNumber').textContent = formatQueueId(serviceId, nowServingEntry.queueNumber);
+                    document.getElementById('modalCurrentStudent').textContent = `${nowServingEntry.fullName}`;
+                } else {
+                    document.getElementById('modalServingNumber').textContent = '---';
+                    document.getElementById('modalCurrentStudent').textContent = 'No one currently being served';
+                }
+
+                const listContainerEl = document.getElementById('modalWaitingList');
+                if (waitingListHtml) {
+                    listContainerEl.innerHTML = waitingListHtml;
+                } else {
+                     listContainerEl.innerHTML = '<div class="empty-list-modal">No one waiting in queue</div>';
+                }
+
+                document.getElementById('modalTotalWaiting').textContent = totalWaitingCount;
+                const estimatedWait = totalWaitingCount * 5; 
+                document.getElementById('modalEstimatedWait').textContent = `${estimatedWait} minutes`;
+            }, (error) => {
+                console.error("Firebase error loading queue status:", error);
+                document.getElementById('modalTitle').textContent = "Connection Error";
+                document.getElementById('modalWaitingList').innerHTML = '<div class="empty-list-modal" style="color: red;">Failed to load real-time data. Check console.</div>';
+            });
+        }
+    </script>
+
+</body>
+</html>

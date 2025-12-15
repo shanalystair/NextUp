@@ -1,0 +1,619 @@
+/* queue.css - New CSS for queue section */
+
+#queue-section {
+    display: block; /* Set to 'block' when you want to show it */
+    text-align: center;
+    padding: 50px;
+    background: #f9f9f9;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 600px;
+    margin: 30px auto;
+}
+
+.service-btn, .status-btn {
+    padding: 15px 25px;
+    background: #c3141c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-family: 'Poppins', sans-serif;
+}
+
+.service-btn:hover, .status-btn:hover {
+    background: #a01015;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+/* Add to queue.css */
+.queue-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #c3141c;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    animation: slideIn 0.3s ease;
+    font-family: 'Inter', sans-serif;
+    max-width: 350px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.queue-notification.error {
+    background: #ff4444;
+}
+
+.queue-notification.hiding {
+    animation: slideOut 0.3s ease;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+.queue-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.queue-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.queue-header h1 {
+    font-size: 42px;
+    color: #c3141c;
+    margin-bottom: 10px;
+}
+
+.queue-subtitle {
+    font-size: 18px;
+    color: #666;
+}
+
+.queue-content {
+    display: grid;
+    /* Defines 3 equal columns */
+    grid-template-columns: 1fr 1fr 1fr; 
+    /* Defines the grid structure using named areas */
+    grid-template-areas: 
+        "serving form waiting"
+        "user user user"
+        "admin admin admin";
+    gap: 30px;
+    margin-top: 30px;
+}
+
+/* Current Serving */
+.current-serving {
+    grid-area: serving;
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.current-serving h2 {
+    color: #c3141c;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.current-number {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    border: 3px solid #c3141c;
+}
+
+.current-number .number {
+    font-size: 60px;
+    font-weight: bold;
+    color: #c3141c;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.current-number .student-name {
+    font-size: 20px;
+    color: #333;
+    display: block;
+}
+
+/* Your Queue */
+.your-queue {
+    grid-area: user;
+    background: #e8f4ff;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.your-queue h2 {
+    color: #0066cc;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.your-number {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    border: 3px solid #0066cc;
+}
+
+.your-number .number {
+    font-size: 48px;
+    font-weight: bold;
+    color: #0066cc;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.queue-details p {
+    margin: 8px 0;
+    font-size: 16px;
+}
+
+/* Join Queue Form */
+.join-queue-form {
+    grid-area: form;
+    background: #f0f8f0;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.join-queue-form h2 {
+    color: #28a745;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #28a745;
+    outline: none;
+}
+
+.join-btn {
+    width: 100%;
+    padding: 15px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.join-btn:hover {
+    background: #218838;
+}
+
+/* Waiting List */
+.waiting-list {
+    grid-area: waiting;
+    background: #fff8e1;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.waiting-list h2 {
+    color: #ff9800;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.list-container {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.waiting-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    transition: background 0.3s;
+}
+
+.waiting-item:last-child {
+    border-bottom: none;
+}
+
+.waiting-item:hover {
+    background: #f9f9f9;
+}
+
+.waiting-item.your-turn {
+    background: #e8f4ff;
+    border-left: 4px solid #0066cc;
+}
+
+.waiting-item .position {
+    width: 30px;
+    font-weight: bold;
+    color: #666;
+}
+
+.waiting-item .queue-num {
+    flex: 1;
+    font-weight: bold;
+    color: #333;
+}
+
+.waiting-item .name {
+    flex: 2;
+    color: #555;
+}
+
+.empty-list {
+    text-align: center;
+    color: #999;
+    padding: 30px;
+    font-style: italic;
+}
+
+.queue-stats {
+    display: flex;
+    justify-content: space-around;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+/* Admin Actions */
+.admin-actions {
+    grid-area: admin;
+    background: #fff5f5;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.admin-actions h2 {
+    color: #dc3545;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.action-buttons {
+    display: grid;
+    gap: 15px;
+}
+
+.action-btn {
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+}
+
+.serve-btn {
+    background: #007bff;
+    color: white;
+}
+
+.complete-btn {
+    background: #28a745;
+    color: white;
+}
+
+.reset-btn {
+    background: #dc3545;
+    color: white;
+}
+
+/* Notification */
+.queue-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    animation: slideIn 0.3s ease;
+    font-family: 'Inter', sans-serif;
+    max-width: 350px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    background: #28a745;
+    color: white;
+}
+
+.queue-notification.error {
+    background: #dc3545;
+}
+
+.queue-notification.hiding {
+    animation: slideOut 0.3s ease;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+/* Home page queue section */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 600px;
+    margin: 30px auto;
+}
+
+.service-btn, .status-btn {
+    padding: 15px 25px;
+    background: #c3141c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-family: 'Poppins', sans-serif;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.service-btn:hover, .status-btn:hover {
+    background: #a01015;
+}
+
+/* --- ADMIN DASHBOARD STYLES --- */
+
+/* Overall Layout */
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.admin-sidebar {
+    width: 250px;
+    background-color: #c3141c; /* Main red color */
+    color: white;
+    padding: 30px 0;
+    flex-shrink: 0; /* Prevents sidebar from shrinking */
+}
+
+.super-admin-tag {
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    /* This style mimics the red box behind the text in the image */
+    background-color: #a01015; 
+}
+
+.admin-nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.admin-nav li a {
+    display: block;
+    padding: 15px 30px;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    transition: background-color 0.2s, color 0.2s;
+    border-left: 5px solid transparent;
+}
+
+.admin-nav li a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-nav li a.active {
+    background-color: white;
+    color: #c3141c; /* Active link text color */
+    border-left: 5px solid #222; /* Small visual indicator */
+    font-weight: bold;
+}
+
+/* Main Content Area */
+.admin-main-content {
+    flex-grow: 1; /* Takes up the rest of the space */
+    background-color: #f9f9f9;
+    padding: 40px;
+}
+
+/* Profile Card (Top Left) */
+.admin-profile-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    max-width: 500px;
+}
+
+.admin-avatar {
+    width: 60px;
+    height: 60px;
+    border: 3px solid #c3141c;
+    border-radius: 50%;
+    padding: 10px;
+    margin-right: 20px;
+    color: #c3141c;
+}
+
+.profile-details h3 {
+    margin: 0;
+    font-size: 20px;
+    color: #333;
+}
+
+.profile-details p {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: #666;
+}
+
+/* Dashboard Grid */
+.admin-dashboard-grid {
+    display: grid;
+    /* Creates a 3-column layout where the last column can be a wide card */
+    grid-template-columns: repeat(3, 1fr); 
+    grid-gap: 25px;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    min-height: 150px;
+}
+
+.dashboard-card h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+}
+
+/* Styling for the Queueing Cards */
+.card-content p {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+.serving-number {
+    font-weight: bold;
+    color: #c3141c;
+}
+
+.waiting-count {
+    font-weight: bold;
+    color: #0066cc;
+}
+
+.waiting-list-small {
+    list-style: none;
+    padding: 10px 0 0 10px;
+    margin: 0;
+    font-size: 14px;
+}
+
+.waiting-list-small li {
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.empty-list-item {
+    font-style: italic;
+    color: #999;
+}
+
+.view-btn {
+    display: block;
+    margin-top: 15px;
+    padding: 8px;
+    background: #007bff;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.view-btn:hover {
+    background: #0056b3;
+}
+
+/* Adjustments for the Placeholder Cards */
+.placeholder-card {
+    background: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 25px;
+    color: #666;
+}
+
+.placeholder-card h2 {
+    color: #999;
+    border-bottom: none;
+    font-size: 20px;
+}
+
+/* Makes the last placeholder card span two columns */
+.large-card {
+    grid-column: span 2;
+}

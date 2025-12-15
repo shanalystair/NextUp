@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - NEXTUP</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    
+    <style>
+        .signup-page {
+            background: linear-gradient(135deg, #f9f9f9 0%, #fff5f5 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .signup-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+        
+        .signup-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(195, 20, 28, 0.1);
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo-container img {
+            height: 50px;
+        }
+        
+        .signup-box h1 {
+            color: #c3141c;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        .account-type-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active {
+            color: #c3141c;
+            border-bottom: 3px solid #c3141c;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #c3141c;
+            outline: none;
+        }
+        
+        .form-group input.error {
+            border-color: #dc3545;
+        }
+        
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .birthday-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .password-requirements {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: #c3141c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        
+        .submit-btn:hover {
+            background: #a01015;
+        }
+        
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #666;
+        }
+        
+        .login-link a {
+            color: #c3141c;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .back-link a {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .id-note {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .birthday-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body class="signup-page">
+    <header>    
+        <nav class="navbar">
+            <div class="top-border"></div>
+            <div class="nav-container">
+                <img src="image/Logo.png" alt="Logo" class="logo">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="queue-management.html">Queue</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="account-type.html" class="active">Sign Up</a></li>
+                    <li><a href="login.html">Log In</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="signup-container">
+            <div class="signup-box">
+                <div class="logo-container">
+                    <img src="image/Logo.png" alt="NEXTUP Logo">
+                </div>
+                <h1>SIGN UP</h1>
+                
+                <div class="account-type-tabs">
+                    <button class="tab-btn active" data-tab="student">STUDENT</button>
+                    <button class="tab-btn" data-tab="personnel">PERSONNEL</button>
+                </div>
+                
+                <div id="studentForm" class="tab-content active">
+                    <form id="studentSignupForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="sFirstName">First Name *</label>
+                                <input type="text" id="sFirstName" required>
+                                <div class="error-message" id="sFirstNameError">First name is required</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="sMiddleName">Middle Name</label>
+                                <input type="text" id="sMiddleName">
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="sLastName">Last Name *</label>
+                                <input type="text" id="sLastName" required>
+                                <div class="error-message" id="sLastNameError">Last name is required</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="sBirthday">Birthday *</label>
+                            <div class="birthday-group">
+                                <select id="sBirthMonth" required>
+                                    <option value="">Month</option>
+                                    <option value="01">January</option>
+                                    <option value="02">February</option>
+                                    <option value="03">March</option>
+                                    <option value="04">April</option>
+                                    <option value="05">May</option>
+                                    <option value="06">June</option>
+                                    <option value="07">July</option>
+                                    <option value="08">August</option>
+                                    <option value="09">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                </select>
+                                <select id="sBirthDay" required>
+                                    <option value="">Day</option>
+                                </select>
+                                <select id="sBirthYear" required>
+                                    <option value="">Year</option>
+                                </select>
+                            </div>
+                            <div class="error-message" id="sBirthdayError">Please select your complete birthday</div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="sStudentId">Student ID *</label>
+                            <input type="text" id="sStudentId" placeholder="e.g., 23-1-02137" pattern="\d{2}-\d-\d{5}" required>
+                            <div class="error-message" id="sStudentIdError">Format: XX-X-XXXXX (e.g., 23-1-02137)</div>
+                            <div class="id-note">Format: Year-Level-Sequence (23-1-02137)</div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="sDepartment">Department/Course *</label>
+                            <select id="sDepartment" required>
+                                <option value="">Select Department/Course</option>
+                                <optgroup label="GRADUATE PROGRAMS">
+                                    <optgroup label="DOCTORAL PROGRAMS">
+                                        <option value="phd-criminal-justice">Doctor of Philosophy (Ph.D) in Criminal Justice</option>
+                                        <option value="phd-education">Doctor of Philosophy (Ph.D) in Educational Management</option>
+                                    </optgroup>
+                                    <optgroup label="MASTER'S PROGRAMS">
+                                        <option value="ma-ed-admin">Master of Arts in Education (M.A.Ed) - Administration & Supervision</option>
+                                        <option value="ma-ed-bio">Master of Arts in Education (M.A.Ed) - Biological Science</option>
+                                        <option value="ma-ed-english">Master of Arts in Education (M.A.Ed) - English</option>
+                                        <option value="ma-ed-filipino">Master of Arts in Education (M.A.Ed) - Filipino</option>
+                                        <option value="ma-ed-guidance">Master of Arts in Education (M.A.Ed) - Guidance & Counseling</option>
+                                        <option value="ma-ed-health">Master of Arts in Education (M.A.Ed) - Health Education</option>
+                                        <option value="ma-ed-math">Master of Arts in Education (M.A.Ed) - Mathematics</option>
+                                        <option value="ma-ed-science">Master of Arts in Education (M.A.Ed) - Science Education</option>
+                                        <option value="ma-nursing">Master of Arts in Nursing (M.A.N)</option>
+                                        <option value="mba">Master in Business Administration (M.B.A)</option>
+                                        <option value="mhm">Master in Hospital Management (M.H.M)</option>
+                                        <option value="mpa">Master in Public Administration (M.P.A)</option>
+                                        <option value="ms-criminal-justice">Master of Science in Criminal Justice</option>
+                                    </optgroup>
+                                </optgroup>
+                                <optgroup label="UNDERGRADUATE PROGRAMS">
+                                    <optgroup label="School of Arts, Sciences & Teacher Education">
+                                        <option value="ba-communication">Bachelor of Arts in Communication</option>
+                                        <option value="bs-psychology">Bachelor of Science in Psychology</option>
+                                        <option value="bs-biology">Bachelor of Science in Biology</option>
+                                        <option value="bachelor-elementary">Bachelor of Elementary Education</option>
+                                        <option value="bachelor-secondary">Bachelor of Secondary Education</option>
+                                    </optgroup>
+                                    <optgroup label="School of Business Education">
+                                        <option value="bsba">Bachelor of Science in Business Administration</option>
+                                        <option value="bs-accountancy">Bachelor of Science in Accountancy</option>
+                                        <option value="bs-accounting-tech">Bachelor of Science in Accounting Technology</option>
+                                        <option value="bs-customs-admin">Bachelor of Science in Customs Administration</option>
+                                    </optgroup>
+                                    <optgroup label="Other Schools">
+                                        <option value="bs-criminology">Bachelor of Science in Criminology</option>
+                                        <option value="dental-medicine">Doctor in Dental Medicine</option>
+                                        <option value="bs-computer-eng">Bachelor of Science in Computer Engineering</option>
+                                        <option value="bs-it">Bachelor of Science in Information Technology</option>
+                                        <option value="bs-hospitality">Bachelor of Science in Hospitality Management</option>
+                                        <option value="bs-nutrition">Bachelor of Science in Nutrition and Dietetics</option>
+                                        <option value="bs-med-tech">Bachelor of Science in Medical Technology</option>
+                                        <option value="bs-nursing">Bachelor of Science in Nursing</option>
+                                        <option value="bs-pharmacy">Bachelor of Science in Pharmacy</option>
+                                        <option value="bs-physical-therapy">Bachelor of Science in Physical Therapy</option>
+                                        <option value="bs-occupational-therapy">Bachelor of Science in Occupational Therapy</option>
+                                        <option value="bs-respiratory-therapy">Bachelor of Science in Respiratory Therapy</option>
+                                        <option value="bs-rad-tech">Bachelor of Science in Radiologic Technology</option>
+                                    </optgroup>
+                                </optgroup>
+                                <optgroup label="SENIOR HIGH SCHOOL">
+                                    <option value="shs-abm">Accountancy, Business and Management (ABM)</option>
+                                    <option value="shs-humss">Humanities and Social Sciences (HUMSS)</option>
+                                    <option value="shs-stem">Science, Technology, Engineering and Mathematics (STEM)</option>
+                                    <option value="shs-sports">Sports Track</option>
+                                    <option value="shs-tvl">Technical-Vocational-Livelihood Track (TVL)</option>
+                                </optgroup>
+                            </select>
+                            <div class="error-message" id="sDepartmentError">Please select your department/course</div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="sEmail">EAC Email Address *</label>
+                            <input type="email" id="sEmail" placeholder="name@eac.edu.ph" pattern=".+@eac\.edu\.ph$" required>
+                            <div class="error-message" id="sEmailError">Must be a valid EAC email (name@eac.edu.ph)</div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="sPassword">Password *</label>
+                            <input type="password" id="sPassword" minlength="8" required>
+                            <div class="password-requirements">
+                                Must be at least 8 characters with at least 1 number
+                            </div>
+                            <div class="error-message" id="sPasswordError">Password must be at least 8 characters with at least 1 number</div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="sConfirmPassword">Confirm Password *</label>
+                            <input type="password" id="sConfirmPassword" required>
+                            <div class="error-message" id="sConfirmPasswordError">Passwords do not match</div>
+                        </div>
+                        
+                        <button type="submit" class="submit-btn">CREATE STUDENT ACCOUNT</button>
+                    </form>
+                </div>
+                
+                <div id="personnelForm" class="tab-content">
+                    <form id="personnelSignupForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="pFirstName">First Name *</label>
+                                <input type="text" id="pFirstName" required>
+                                <div class="error-message" id="pFirstNameError">First name is required</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="pMiddleName">Middle Name</label>
+                                <input type="text" id="pMiddleName">
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="pLastName">Last Name *</label>
+                                <input type="text" id="pLastName" required>
+                                <div class="error-message" id="pLastNameError">Last name is required</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="pBirthday">Birthday *</label>
+                            <div class="birthday-group">
+                                <select id="pBirthMonth" required>
+                                    <option value="">Month</option>
+                                    <option value="01">January</option>
+                                    <option value="02">February</option>
+                                    <option value="03">March</option>
+                                    <option value="04">April</option>
+                                    <option value="05">May</option>
+                                    <option value="06">June</option>
+                                    <option value="07">July</option>
+                                    <option value="08">August</option>
+                                    <option value="09">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                </select>
+                                <select id="pBirthDay" required>
+                                    <option value="">Day</option>
+                                </select>
+                                <select id="pBirthYear" required>
+                                    <option value="">Year</option>
+                                </select>
+                            </div>
+                            <div class="error-message" id="pBirthdayError">Please select your complete birthday</div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="pEmployeeId">Employee ID *</label>
+                            <input type="text" id="pEmployeeId" placeholder="e.g., EAC-2023-001" required>
+                            <div class="error-message" id="pEmployeeIdError">Employee ID is required</div>
+                            <div class="id-note">Format: EAC-YYYY-NNN</div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="pPosition">Position/Department *</label>
+                            <select id="pPosition" required>
+                                <option value="">Select Position/Department</option>
+                                <optgroup label="ACADEMIC PERSONNEL">
+                                    <option value="professor">Professor</option>
+                                    <option value="associate-professor">Associate Professor</option>
+                                    <option value="assistant-professor">Assistant Professor</option>
+                                    <option value="instructor">Instructor</option>
+                                    <option value="lecturer">Lecturer</option>
+                                    <option value="dean">Dean</option>
+                                    <option value="department-chair">Department Chair</option>
+                                </optgroup>
+                                <optgroup label="ADMINISTRATIVE PERSONNEL">
+                                    <option value="registrar">Registrar Staff</option>
+                                    <option value="cashier">Cashier Staff</option>
+                                    <option value="guidance">Guidance Counselor</option>
+                                    <option value="librarian">Librarian</option>
+                                    <option value="clinic">Clinic Staff</option>
+                                    <option value="it-staff">IT Staff</option>
+                                    <option value="hr">Human Resources</option>
+                                    <option value="accounting">Accounting Staff</option>
+                                    <option value="admin-assistant">Administrative Assistant</option>
+                                </optgroup>
+                                <optgroup label="SUPPORT STAFF">
+                                    <option value="maintenance">Maintenance Staff</option>
+                                    <option value="security">Security Personnel</option>
+                                    <option value="clerk">Office Clerk</option>
+                                    <option value="secretary">Secretary</option>
+                                </optgroup>
+                            </select>
+                            <div class="error-message" id="pPositionError">Please select your position/department</div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="pEmail">EAC Email Address *</label>
+                            <input type="email" id="pEmail" placeholder="name@eac.edu.ph" pattern=".+@eac\.edu\.ph$" required>
+                            <div class="error-message" id="pEmailError">Must be a valid EAC email (name@eac.edu.ph)</div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="pPassword">Password *</label>
+                            <input type="password" id="pPassword" minlength="8" required>
+                            <div class="password-requirements">
+                                Must be at least 8 characters with at least 1 number
+                            </div>
+                            <div class="error-message" id="pPasswordError">Password must be at least 8 characters with at least 1 number</div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="pConfirmPassword">Confirm Password *</label>
+                            <input type="password" id="pConfirmPassword" required>
+                            <div class="error-message" id="pConfirmPasswordError">Passwords do not match</div>
+                        </div>
+                        
+                        <button type="submit" class="submit-btn">CREATE PERSONNEL ACCOUNT</button>
+                    </form>
+                </div>
+                
+                <div class="login-link">
+                    Already have an account? <a href="login.html">Log In</a>
+                </div>
+                
+                <div class="back-link">
+                    <a href="index.html">← Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Emilio Aguinaldo College - Cavite | NEXTUP Queue System</p>
+    </footer>
+
+    <script>
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDNuFnE-K85NBrOrIISzLSq9ie4OhnmCuw", 
+            authDomain: "nextup-88c61.firebaseapp.com",
+            projectId: "nextup-88c61",
+            storageBucket: "nextup-88c61.firebasestorage.app",
+            messagingSenderId: "84271208628",
+            appId: "1:84271208628:web:c9c537fcfbb712a73cdfe1",
+            measurementId: "G-WE2SJ85HCC"
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = app.auth();
+        
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabId + 'Form').classList.add('active');
+            });
+        });
+        
+        function populateDays() {
+            const daySelects = document.querySelectorAll('select[id$="BirthDay"]');
+            daySelects.forEach(select => {
+                select.innerHTML = '<option value="">Day</option>';
+                for (let i = 1; i <= 31; i++) {
+                    const option = document.createElement('option');
+                    option.value = i.toString().padStart(2, '0');
+                    option.textContent = i;
+                    select.appendChild(option);
+                }
+            });
+        }
+        
+        function populateYears() {
+            const yearSelects = document.querySelectorAll('select[id$="BirthYear"]');
+            const currentYear = new Date().getFullYear();
+            yearSelects.forEach(select => {
+                select.innerHTML = '<option value="">Year</option>';
+                for (let i = currentYear - 16; i >= 1950; i--) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i;
+                    select.appendChild(option);
+                }
+            });
+        }
+
+        document.getElementById('studentSignupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const isValid = validateStudentForm();
+            if (!isValid) return;
+            
+            const email = document.getElementById('sEmail').value.trim();
+            const password = document.getElementById('sPassword').value;
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                   
+                    const user = userCredential.user;
+                    const userData = {
+                        accountType: 'student',
+                        firstName: document.getElementById('sFirstName').value.trim(),
+                        middleName: document.getElementById('sMiddleName').value.trim(),
+                        lastName: document.getElementById('sLastName').value.trim(),
+                        birthday: `${document.getElementById('sBirthYear').value}-${document.getElementById('sBirthMonth').value}-${document.getElementById('sBirthDay').value}`,
+                        studentId: document.getElementById('sStudentId').value.trim(),
+                        department: document.getElementById('sDepartment').value,
+                        email: email,
+                        
+                        password: user.uid, 
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    saveUserLocal(userData); 
+                    
+                    alert(`✅ Student account created successfully in Firebase! Please log in.`);
+                    document.getElementById('studentSignupForm').reset();
+                    
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1000);
+                })
+                .catch((error) => {
+                    let errorMessage = "An unknown error occurred during signup.";
+                    if (error.code === 'auth/email-already-in-use') {
+                        errorMessage = 'This email address is already registered in Firebase.';
+                    } else if (error.code === 'auth/weak-password') {
+                        errorMessage = 'The password is too weak. Please use a stronger password.';
+                    } else if (error.code === 'auth/network-request-failed') {
+                        errorMessage = 'Network error. Please check your connection.';
+                    }
+                    alert(`❌ Signup Failed: ${errorMessage}`);
+                    console.error("Firebase Student Signup Error:", error);
+                });
+        });
+        
+        document.getElementById('personnelSignupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const isValid = validatePersonnelForm();
+            if (!isValid) return;
+            
+            const email = document.getElementById('pEmail').value.trim();
+            const password = document.getElementById('pPassword').value;
+            
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+    
+                    const user = userCredential.user;
+
+                    const userData = {
+                        accountType: 'personnel',
+                        firstName: document.getElementById('pFirstName').value.trim(),
+                        middleName: document.getElementById('pMiddleName').value.trim(),
+                        lastName: document.getElementById('pLastName').value.trim(),
+                        birthday: `${document.getElementById('pBirthYear').value}-${document.getElementById('pBirthMonth').value}-${document.getElementById('pBirthDay').value}`,
+                        employeeId: document.getElementById('pEmployeeId').value.trim(),
+                        position: document.getElementById('pPosition').value,
+                        email: email,
+                        password: user.uid, 
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    saveUserLocal(userData); 
+                    
+                    alert(`✅ Personnel account created successfully in Firebase! You can now use this on the Admin Login page.`);
+                    document.getElementById('personnelSignupForm').reset();
+                    
+                    setTimeout(() => {
+                        window.location.href = 'admin-login.html';
+                    }, 1000);
+                })
+                .catch((error) => {
+                    let errorMessage = "An unknown error occurred during signup.";
+                    if (error.code === 'auth/email-already-in-use') {
+                        errorMessage = 'This email address is already registered in Firebase.';
+                    } else if (error.code === 'auth/weak-password') {
+                        errorMessage = 'The password is too weak. Please use a stronger password.';
+                    } else if (error.code === 'auth/network-request-failed') {
+                        errorMessage = 'Network error. Please check your connection.';
+                    }
+                    alert(`❌ Signup Failed: ${errorMessage}`);
+                    console.error("Firebase Signup Error:", error);
+                });
+        });
+        
+        function validateStudentForm() {
+            
+            let isValid = true;
+            
+            resetErrors('s');
+            
+            const studentId = document.getElementById('sStudentId').value.trim();
+            const studentIdPattern = /^\d{2}-\d-\d{5}$/;
+            if (!studentIdPattern.test(studentId)) {
+                showError('sStudentIdError', 'Format: XX-X-XXXXX (e.g., 23-1-02137)');
+                isValid = false;
+            }
+            
+            const email = document.getElementById('sEmail').value.trim();
+            const emailPattern = /.+@eac\.edu\.ph$/;
+            if (!emailPattern.test(email)) {
+                showError('sEmailError', 'Must be a valid EAC email (name@eac.edu.ph)');
+                isValid = false;
+            }
+
+            const password = document.getElementById('sPassword').value;
+            const passwordPattern = /^(?=.*\d).{8,}$/;
+            if (!passwordPattern.test(password)) {
+                showError('sPasswordError', 'Password must be at least 8 characters with at least 1 number');
+                isValid = false;
+            }
+            
+            const confirmPassword = document.getElementById('sConfirmPassword').value;
+            if (password !== confirmPassword) {
+                showError('sConfirmPasswordError', 'Passwords do not match');
+                isValid = false;
+            }
+
+            const requiredFields = ['sFirstName', 'sLastName', 'sBirthMonth', 'sBirthDay', 'sBirthYear', 'sDepartment'];
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    showError(fieldId + 'Error', 'This field is required');
+                    isValid = false;
+                }
+            });
+            
+            return isValid;
+        }
+        
+        function validatePersonnelForm() {
+           
+            let isValid = true;
+            
+            resetErrors('p');
+
+            const email = document.getElementById('pEmail').value.trim();
+            const emailPattern = /.+@eac\.edu\.ph$/;
+            if (!emailPattern.test(email)) {
+                showError('pEmailError', 'Must be a valid EAC email (name@eac.edu.ph)');
+                isValid = false;
+            }
+
+            const password = document.getElementById('pPassword').value;
+            const passwordPattern = /^(?=.*\d).{8,}$/;
+            if (!passwordPattern.test(password)) {
+                showError('pPasswordError', 'Password must be at least 8 characters with at least 1 number');
+                isValid = false;
+            }
+
+            const confirmPassword = document.getElementById('pConfirmPassword').value;
+            if (password !== confirmPassword) {
+                showError('pConfirmPasswordError', 'Passwords do not match');
+                isValid = false;
+            }
+            
+            const requiredFields = ['pFirstName', 'pLastName', 'pBirthMonth', 'pBirthDay', 'pBirthYear', 'pEmployeeId', 'pPosition'];
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    showError(fieldId + 'Error', 'This field is required');
+                    isValid = false;
+                }
+            });
+            
+            return isValid;
+        }
+        
+        function resetErrors(prefix) {
+            document.querySelectorAll(`[id^="${prefix}"]`).forEach(element => {
+                if (element.id.endsWith('Error')) {
+                    element.style.display = 'none';
+                }
+                if (element.tagName === 'INPUT' || element.tagName === 'SELECT') {
+                    element.classList.remove('error');
+                }
+            });
+        }
+        
+        function showError(errorId, message) {
+            const errorElement = document.getElementById(errorId);
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+ 
+                const inputId = errorId.replace('Error', '');
+                const inputElement = document.getElementById(inputId);
+                if (inputElement) {
+                    inputElement.classList.add('error');
+                }
+            }
+        }
+
+        function saveUserLocal(userData) { 
+            let users = JSON.parse(localStorage.getItem('nextup_users') || '[]');
+            
+            users = users.filter(user => user.email !== userData.email);
+            
+            users.push(userData);
+            localStorage.setItem('nextup_users', JSON.stringify(users));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            populateDays();
+            populateYears();
+
+            document.querySelectorAll('input, select').forEach(input => {
+                input.addEventListener('blur', function() {
+                    const id = this.id;
+                    if (id.startsWith('s')) {
+                        validateStudentField(id);
+                    } else if (id.startsWith('p')) {
+                        validatePersonnelField(id);
+                    }
+                });
+            });
+        });
+        
+        function validateStudentField(fieldId) {
+            const field = document.getElementById(fieldId);
+            const value = field.value.trim();
+
+
+            switch(fieldId) {
+                case 'sStudentId':
+                    const studentIdPattern = /^\d{2}-\d-\d{5}$/;
+                    if (value && !studentIdPattern.test(value)) {
+                        showError('sStudentIdError', 'Format: XX-X-XXXXX (e.g., 23-1-02137)');
+                    }
+                    break;
+                case 'sEmail':
+                    const emailPattern = /.+@eac\.edu\.ph$/;
+                    if (value && !emailPattern.test(value)) {
+                        showError('sEmailError', 'Must be a valid EAC email (name@eac.edu.ph)');
+                    }
+                    break;
+                case 'sPassword':
+                    const passwordPattern = /^(?=.*\d).{8,}$/;
+                    if (value && !passwordPattern.test(value)) {
+                        showError('sPasswordError', 'Password must be at least 8 characters with at least 1 number');
+                    }
+                    break;
+                case 'sConfirmPassword':
+                     const password = document.getElementById('sPassword').value;
+                     if (value && value !== password) {
+                         showError('sConfirmPasswordError', 'Passwords do not match');
+                     }
+                     break;
+            }
+        }
+        
+        function validatePersonnelField(fieldId) {
+            const field = document.getElementById(fieldId);
+            const value = field.value.trim();
+
+            
+            switch(fieldId) {
+                case 'pEmail':
+                    const emailPattern = /.+@eac\.edu\.ph$/;
+                    if (value && !emailPattern.test(value)) {
+                        showError('pEmailError', 'Must be a valid EAC email (name@eac.edu.ph)');
+                    }
+                    break;
+                case 'pPassword':
+                    const passwordPattern = /^(?=.*\d).{8,}$/;
+                    if (value && !passwordPattern.test(value)) {
+                        showError('pPasswordError', 'Password must be at least 8 characters with at least 1 number');
+                    }
+                    break;
+                case 'pConfirmPassword':
+                     const password = document.getElementById('pPassword').value;
+                     if (value && value !== password) {
+                         showError('pConfirmPasswordError', 'Passwords do not match');
+                     }
+                     break;
+            }
+        }
+    </script>
+</body>
+</html>

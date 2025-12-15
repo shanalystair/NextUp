@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Sign Up - NEXTUP</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        .signup-page {
+            background: linear-gradient(135deg, #f9f9f9 0%, #fff5f5 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .signup-container {
+            max-width: 600px;
+            margin: 60px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+        
+        .signup-box {
+            background: white;
+            border-radius: 20px;
+            padding: 50px 40px;
+            box-shadow: 0 10px 40px rgba(195, 20, 28, 0.1);
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo-container img {
+            height: 50px;
+        }
+        
+        .signup-box h1 {
+            color: #c3141c;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #c3141c;
+            outline: none;
+        }
+        
+        .form-group input.error {
+            border-color: #dc3545;
+        }
+        
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .birthday-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .password-requirements {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: #c3141c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        
+        .submit-btn:hover {
+            background: #a01015;
+        }
+        
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #666;
+        }
+        
+        .login-link a {
+            color: #c3141c;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .back-link a {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .birthday-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body class="signup-page">
+    <header>    
+        <nav class="navbar">
+            <div class="top-border"></div>
+            <div class="nav-container">
+                <img src="image/Logo.png" alt="Logo" class="logo">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="queue-management.html">Queue</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="account-type.html" class="active">Sign Up</a></li>
+                    <li><a href="login.html">Log In</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="signup-container">
+            <div class="signup-box">
+                <div class="logo-container">
+                    <img src="image/Logo.png" alt="NEXTUP Logo">
+                </div>
+                <h1>STUDENT SIGN UP</h1>
+                
+                <form id="signupForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="firstName">First Name *</label>
+                            <input type="text" id="firstName" required>
+                            <div class="error-message" id="firstNameError">First name is required</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="middleName">Middle Name</label>
+                            <input type="text" id="middleName">
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="lastName">Last Name *</label>
+                            <input type="text" id="lastName" required>
+                            <div class="error-message" id="lastNameError">Last name is required</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="birthday">Birthday *</label>
+                        <div class="birthday-group">
+                            <select id="birthMonth" required>
+                                <option value="">Month</option>
+                                <option value="01">January</option>
+                                <option value="02">February</option>
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">June</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                            <select id="birthDay" required>
+                                <option value="">Day</option>
+                                <!-- Days will be populated by JavaScript -->
+                            </select>
+                            <select id="birthYear" required>
+                                <option value="">Year</option>
+                                <!-- Years will be populated by JavaScript -->
+                            </select>
+                        </div>
+                        <div class="error-message" id="birthdayError">Please select your complete birthday</div>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="studentId">Student ID *</label>
+                        <input type="text" id="studentId" placeholder="e.g., 23-1-02137" pattern="\d{2}-\d-\d{5}" required>
+                        <div class="error-message" id="studentIdError">Format: XX-X-XXXXX (e.g., 23-1-02137)</div>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="department">Department/Course *</label>
+                        <select id="department" required>
+                            <option value="">Select Department/Course</option>
+                            <optgroup label="GRADUATE PROGRAMS">
+                                <optgroup label="DOCTORAL PROGRAMS">
+                                    <option value="phd-criminal-justice">Doctor of Philosophy (Ph.D) in Criminal Justice</option>
+                                    <option value="phd-education">Doctor of Philosophy (Ph.D) in Educational Management</option>
+                                </optgroup>
+                                <optgroup label="MASTER'S PROGRAMS">
+                                    <option value="ma-ed-admin">Master of Arts in Education (M.A.Ed) - Administration & Supervision</option>
+                                    <option value="ma-ed-bio">Master of Arts in Education (M.A.Ed) - Biological Science</option>
+                                    <option value="ma-ed-english">Master of Arts in Education (M.A.Ed) - English</option>
+                                    <option value="ma-ed-filipino">Master of Arts in Education (M.A.Ed) - Filipino</option>
+                                    <option value="ma-ed-guidance">Master of Arts in Education (M.A.Ed) - Guidance & Counseling</option>
+                                    <option value="ma-ed-health">Master of Arts in Education (M.A.Ed) - Health Education</option>
+                                    <option value="ma-ed-math">Master of Arts in Education (M.A.Ed) - Mathematics</option>
+                                    <option value="ma-ed-science">Master of Arts in Education (M.A.Ed) - Science Education</option>
+                                    <option value="ma-nursing">Master of Arts in Nursing (M.A.N)</option>
+                                    <option value="mba">Master in Business Administration (M.B.A)</option>
+                                    <option value="mhm">Master in Hospital Management (M.H.M)</option>
+                                    <option value="mpa">Master in Public Administration (M.P.A)</option>
+                                    <option value="ms-criminal-justice">Master of Science in Criminal Justice</option>
+                                </optgroup>
+                            </optgroup>
+                            <optgroup label="UNDERGRADUATE PROGRAMS">
+                                <optgroup label="School of Arts, Sciences & Teacher Education">
+                                    <option value="ba-communication">Bachelor of Arts in Communication</option>
+                                    <option value="bs-psychology">Bachelor of Science in Psychology</option>
+                                    <option value="bs-biology">Bachelor of Science in Biology</option>
+                                    <option value="bachelor-elementary">Bachelor of Elementary Education</option>
+                                    <option value="bachelor-secondary">Bachelor of Secondary Education</option>
+                                </optgroup>
+                                <optgroup label="School of Business Education">
+                                    <option value="bsba">Bachelor of Science in Business Administration</option>
+                                    <option value="bs-accountancy">Bachelor of Science in Accountancy</option>
+                                    <option value="bs-accounting-tech">Bachelor of Science in Accounting Technology</option>
+                                    <option value="bs-customs-admin">Bachelor of Science in Customs Administration</option>
+                                </optgroup>
+                                <optgroup label="Other Schools">
+                                    <option value="bs-criminology">Bachelor of Science in Criminology</option>
+                                    <option value="dental-medicine">Doctor in Dental Medicine</option>
+                                    <option value="bs-computer-eng">Bachelor of Science in Computer Engineering</option>
+                                    <option value="bs-it">Bachelor of Science in Information Technology</option>
+                                    <option value="bs-hospitality">Bachelor of Science in Hospitality Management</option>
+                                    <option value="bs-nutrition">Bachelor of Science in Nutrition and Dietetics</option>
+                                    <option value="bs-med-tech">Bachelor of Science in Medical Technology</option>
+                                    <option value="bs-nursing">Bachelor of Science in Nursing</option>
+                                    <option value="bs-pharmacy">Bachelor of Science in Pharmacy</option>
+                                    <option value="bs-physical-therapy">Bachelor of Science in Physical Therapy</option>
+                                    <option value="bs-occupational-therapy">Bachelor of Science in Occupational Therapy</option>
+                                    <option value="bs-respiratory-therapy">Bachelor of Science in Respiratory Therapy</option>
+                                    <option value="bs-rad-tech">Bachelor of Science in Radiologic Technology</option>
+                                </optgroup>
+                            </optgroup>
+                            <optgroup label="SENIOR HIGH SCHOOL">
+                                <option value="shs-abm">Accountancy, Business and Management (ABM)</option>
+                                <option value="shs-humss">Humanities and Social Sciences (HUMSS)</option>
+                                <option value="shs-stem">Science, Technology, Engineering and Mathematics (STEM)</option>
+                                <option value="shs-sports">Sports Track</option>
+                                <option value="shs-tvl">Technical-Vocational-Livelihood Track (TVL)</option>
+                            </optgroup>
+                        </select>
+                        <div class="error-message" id="departmentError">Please select your department/course</div>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="email">EAC Email Address *</label>
+                        <input type="email" id="email" placeholder="name@eac.edu.ph" pattern=".+@eac\.edu\.ph$" required>
+                        <div class="error-message" id="emailError">Must be a valid EAC email (name@eac.edu.ph)</div>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="password">Password *</label>
+                        <input type="password" id="password" minlength="8" required>
+                        <div class="password-requirements">
+                            Must be at least 8 characters with at least 1 number
+                        </div>
+                        <div class="error-message" id="passwordError">Password must be at least 8 characters with at least 1 number</div>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="confirmPassword">Confirm Password *</label>
+                        <input type="password" id="confirmPassword" required>
+                        <div class="error-message" id="confirmPasswordError">Passwords do not match</div>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">CREATE ACCOUNT</button>
+                </form>
+                
+                <div class="login-link">
+                    Already have an account? <a href="login.html">Log In</a>
+                </div>
+                
+                <div class="back-link">
+                    <a href="account-type.html">← Back to Account Type</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Emilio Aguinaldo College - Cavite</p>
+    </footer>
+
+    <script>
+        // Populate days
+        const daySelect = document.getElementById('birthDay');
+        for (let i = 1; i <= 31; i++) {
+            const option = document.createElement('option');
+            option.value = i.toString().padStart(2, '0');
+            option.textContent = i;
+            daySelect.appendChild(option);
+        }
+        
+        // Populate years (from 1980 to current year - 16)
+        const yearSelect = document.getElementById('birthYear');
+        const currentYear = new Date().getFullYear();
+        for (let i = currentYear - 16; i >= 1980; i--) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            yearSelect.appendChild(option);
+        }
+        
+        // Form validation
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let isValid = true;
+            
+            // Reset errors
+            document.querySelectorAll('.error-message').forEach(error => {
+                error.style.display = 'none';
+            });
+            document.querySelectorAll('input, select').forEach(input => {
+                input.classList.remove('error');
+            });
+            
+            // Validate first name
+            const firstName = document.getElementById('firstName').value.trim();
+            if (!firstName) {
+                showError('firstNameError', 'First name is required');
+                isValid = false;
+            }
+            
+            // Validate last name
+            const lastName = document.getElementById('lastName').value.trim();
+            if (!lastName) {
+                showError('lastNameError', 'Last name is required');
+                isValid = false;
+            }
+            
+            // Validate birthday
+            const birthMonth = document.getElementById('birthMonth').value;
+            const birthDay = document.getElementById('birthDay').value;
+            const birthYear = document.getElementById('birthYear').value;
+            if (!birthMonth || !birthDay || !birthYear) {
+                showError('birthdayError', 'Please select your complete birthday');
+                isValid = false;
+            }
+            
+            // Validate student ID format (XX-X-XXXXX)
+            const studentId = document.getElementById('studentId').value.trim();
+            const studentIdPattern = /^\d{2}-\d-\d{5}$/;
+            if (!studentIdPattern.test(studentId)) {
+                showError('studentIdError', 'Format: XX-X-XXXXX (e.g., 23-1-02137)');
+                isValid = false;
+            }
+            
+            // Validate department
+            const department = document.getElementById('department').value;
+            if (!department) {
+                showError('departmentError', 'Please select your department/course');
+                isValid = false;
+            }
+            
+            // Validate email (must be @eac.edu.ph)
+            const email = document.getElementById('email').value.trim();
+            const emailPattern = /.+@eac\.edu\.ph$/;
+            if (!emailPattern.test(email)) {
+                showError('emailError', 'Must be a valid EAC email (name@eac.edu.ph)');
+                isValid = false;
+            }
+            
+            // Validate password (at least 8 chars with 1 number)
+            const password = document.getElementById('password').value;
+            const passwordPattern = /^(?=.*\d).{8,}$/;
+            if (!passwordPattern.test(password)) {
+                showError('passwordError', 'Password must be at least 8 characters with at least 1 number');
+                isValid = false;
+            }
+            
+            // Validate password confirmation
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            if (password !== confirmPassword) {
+                showError('confirmPasswordError', 'Passwords do not match');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Hash password (simple SHA-256 simulation)
+                const hashedPassword = sha256(password);
+                
+                // Create user object
+                const userData = {
+                    firstName: firstName,
+                    middleName: document.getElementById('middleName').value.trim(),
+                    lastName: lastName,
+                    birthday: `${birthYear}-${birthMonth}-${birthDay}`,
+                    studentId: studentId,
+                    department: department,
+                    email: email,
+                    password: hashedPassword, // In real app, hash on server side
+                    accountType: 'student',
+                    createdAt: new Date().toISOString()
+                };
+                
+                // Save to localStorage (in real app, send to server)
+                let users = JSON.parse(localStorage.getItem('nextup_users') || '[]');
+                users.push(userData);
+                localStorage.setItem('nextup_users', JSON.stringify(users));
+                
+                // Show success message and redirect
+                alert('✅ Account created successfully! Please log in.');
+                window.location.href = 'login.html';
+            }
+        });
+        
+        function showError(errorId, message) {
+            const errorElement = document.getElementById(errorId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            
+            // Find corresponding input and add error class
+            const inputId = errorId.replace('Error', '');
+            const inputElement = document.getElementById(inputId);
+            if (inputElement) {
+                inputElement.classList.add('error');
+            }
+        }
+        
+        // Simple SHA-256 hash function (for demo)
+        function sha256(input) {
+            // In real application, use proper server-side hashing
+            // This is just for demonstration
+            let hash = 0;
+            for (let i = 0; i < input.length; i++) {
+                const char = input.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return Math.abs(hash).toString(16).slice(0, 32);
+        }
+        
+        // Real-time validation
+        document.querySelectorAll('input, select').forEach(input => {
+            input.addEventListener('blur', function() {
+                validateField(this.id);
+            });
+        });
+        
+        function validateField(fieldId) {
+            const field = document.getElementById(fieldId);
+            const value = field.value.trim();
+            
+            switch(fieldId) {
+                case 'studentId':
+                    const studentIdPattern = /^\d{2}-\d-\d{5}$/;
+                    if (!studentIdPattern.test(value)) {
+                        showError('studentIdError', 'Format: XX-X-XXXXX (e.g., 23-1-02137)');
+                    }
+                    break;
+                case 'email':
+                    const emailPattern = /.+@eac\.edu\.ph$/;
+                    if (!emailPattern.test(value)) {
+                        showError('emailError', 'Must be a valid EAC email (name@eac.edu.ph)');
+                    }
+                    break;
+                case 'password':
+                    const passwordPattern = /^(?=.*\d).{8,}$/;
+                    if (!passwordPattern.test(value)) {
+                        showError('passwordError', 'Password must be at least 8 characters with at least 1 number');
+                    }
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>

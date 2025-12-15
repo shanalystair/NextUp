@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXTUP - Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="queue.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script> 
+    
+    <style>
+       
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .admin-sidebar {
+            width: 250px;
+            background-color: #c3141c; 
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .super-admin-tag {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .admin-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .admin-nav li {
+            margin-bottom: 10px;
+        }
+
+        .admin-nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+            font-weight: 500;
+        }
+
+        .admin-nav a:hover {
+            background-color: #a01015; 
+        }
+
+        .admin-nav a.active {
+            background-color: white;
+            color: #c3141c;
+            font-weight: 700;
+        }
+        
+        #logoutLink {
+            color: white;
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            font-weight: 600;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .admin-main-content {
+            flex-grow: 1;
+            padding: 30px;
+            background-color: #f4f7f6;
+        }
+
+        .admin-header {
+            margin-bottom: 30px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header h2 {
+            margin: 0;
+            color: #333;
+            font-size: 28px;
+        }
+        
+        #adminEmailDisplay {
+            font-size: 14px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .queue-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            border-top: 5px solid #c3141c;
+            transition: transform 0.3s;
+        }
+        
+        .queue-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .queue-card h3 {
+            color: #c3141c;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 22px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .queue-status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .queue-status-value {
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .serving-number {
+            font-size: 24px;
+            color: #27ae60; 
+        }
+        
+        .waiting-count {
+            font-size: 24px;
+            color: #e67e22;
+        }
+        
+        .served-count-display {
+            font-size: 20px;
+            color: #007bff;
+        }
+
+        .waiting-list {
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+
+        .waiting-list h4 {
+            font-size: 16px;
+            color: #c3141c;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .waiting-list ul {
+            list-style: none;
+            padding: 0;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .waiting-list li {
+            background-color: #f9f9f9;
+            padding: 8px 10px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .quick-actions {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid #eee;
+        }
+
+        .quick-actions h4 {
+            font-size: 18px;
+            color: #c3141c;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s;
+            font-size: 14px;
+        }
+        
+        .action-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .serve-next-btn {
+            background-color: #28a745; 
+        }
+        
+        .complete-btn {
+            background-color: #007bff; 
+        }
+        
+        .reset-btn {
+            background-color: #dc3545; 
+        }
+        
+        .no-waiting {
+            font-style: italic;
+            color: #999;
+            padding: 10px 0;
+            text-align: center;
+        }
+        
+        .serving-none {
+            color: #999;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="super-admin-tag">Admin Personnel</div>
+            <nav class="admin-nav">
+                <ul>
+                    <li><a href="admin-dashboard.html" class="active">Dashboard</a></li>
+                </ul>
+            </nav>
+            <a href="#" id="logoutLink">Logout</a>
+        </aside>
+
+        <div class="admin-main-content">
+            <div class="admin-header">
+                <h2>Queue Management Dashboard</h2>
+                <span id="adminEmailDisplay">Loading...</span>
+            </div>
+
+            <div class="dashboard-grid">
+                
+                <div class="queue-card" id="registrar-queue-card">
+                    <h3>Registrar Queue</h3>
+                    <div class="queue-status">
+                        <div class="queue-status-item">
+                            Now Serving:
+                            <span class="queue-status-value serving-number" id="registrar-now-serving">---</span>
+                        </div>
+                        <div class="queue-status-item">
+                            Total Waiting:
+                            <span class="queue-status-value waiting-count" id="registrar-total-waiting">0</span>
+                        </div>
+                        <div class="queue-status-item">
+                            Served Today:
+                            <span class="queue-status-value served-count-display" id="registrar-served-count">0</span>
+                        </div>
+                        </div>
+                    <div class="waiting-list">
+                        <h4>Waiting Line:</h4>
+                        <ul id="registrar-waiting-list">
+                            <li class="no-waiting">No one in the waiting line.</li>
+                        </ul>
+                    </div>
+                    <div class="quick-actions">
+                        <h4>Quick Actions</h4>
+                        <div class="action-buttons">
+                            <button class="action-btn serve-next-btn" data-service="registrar" data-action="serve">Serve Next</button>
+                            <button class="action-btn complete-btn" data-service="registrar" data-action="complete">Complete Service</button>
+                            <button class="action-btn reset-btn" data-service="registrar" data-action="reset">Reset Queue</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="queue-card" id="guidance-queue-card">
+                    <h3>Guidance Office Queue</h3>
+                    <div class="queue-status">
+                        <div class="queue-status-item">
+                            Now Serving:
+                            <span class="queue-status-value serving-number" id="guidance-now-serving">---</span>
+                        </div>
+                        <div class="queue-status-item">
+                            Total Waiting:
+                            <span class="queue-status-value waiting-count" id="guidance-total-waiting">0</span>
+                        </div>
+                        <div class="queue-status-item">
+                            Served Today:
+                            <span class="queue-status-value served-count-display" id="guidance-served-count">0</span>
+                        </div>
+                        </div>
+                    <div class="waiting-list">
+                        <h4>Waiting Line:</h4>
+                        <ul id="guidance-waiting-list">
+                            <li class="no-waiting">No one in the waiting line.</li>
+                        </ul>
+                    </div>
+                    <div class="quick-actions">
+                        <h4>Quick Actions</h4>
+                        <div class="action-buttons">
+                            <button class="action-btn serve-next-btn" data-service="guidance" data-action="serve">Serve Next</button>
+                            <button class="action-btn complete-btn" data-service="guidance" data-action="complete">Complete Service</button>
+                            <button class="action-btn reset-btn" data-service="guidance" data-action="reset">Reset Queue</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="queue-card" id="it_office-queue-card">
+                    <h3>IT Office Queue</h3>
+                    <div class="queue-status">
+                        <div class="queue-status-item">
+                            Now Serving:
+                            <span class="queue-status-value serving-number" id="it_office-now-serving">---</span>
+                        </div>
+                        <div class="queue-status-item">
+                            Total Waiting:
+                            <span class="queue-status-value waiting-count" id="it_office-total-waiting">0</span>
+                        </div>
+                        <div class="queue-status-item">
+                            Served Today:
+                            <span class="queue-status-value served-count-display" id="it_office-served-count">0</span>
+                        </div>
+                        </div>
+                    <div class="waiting-list">
+                        <h4>Waiting Line:</h4>
+                        <ul id="it_office-waiting-list">
+                            <li class="no-waiting">No one in the waiting line.</li>
+                        </ul>
+                    </div>
+                    <div class="quick-actions">
+                        <h4>Quick Actions</h4>
+                        <div class="action-buttons">
+                            <button class="action-btn serve-next-btn" data-service="it_office" data-action="serve">Serve Next</button>
+                            <button class="action-btn complete-btn" data-service="it_office" data-action="complete">Complete Service</button>
+                            <button class="action-btn reset-btn" data-service="it_office" data-action="reset">Reset Queue</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="queue-card" id="cashier-queue-card">
+                    <h3>Cashier Queue</h3>
+                    <div class="queue-status">
+                        <div class="queue-status-item">
+                            Now Serving:
+                            <span class="queue-status-value serving-number" id="cashier-now-serving">---</span>
+                        </div>
+                        <div class="queue-status-item">
+                            Total Waiting:
+                            <span class="queue-status-value waiting-count" id="cashier-total-waiting">0</span>
+                        </div>
+                        <div class="queue-status-item">
+                            Served Today:
+                            <span class="queue-status-value served-count-display" id="cashier-served-count">0</span>
+                        </div>
+                        </div>
+                    <div class="waiting-list">
+                        <h4>Waiting Line:</h4>
+                        <ul id="cashier-waiting-list">
+                            <li class="no-waiting">No one in the waiting line.</li>
+                        </ul>
+                    </div>
+                    <div class="quick-actions">
+                        <h4>Quick Actions</h4>
+                        <div class="action-buttons">
+                            <button class="action-btn serve-next-btn" data-service="cashier" data-action="serve">Serve Next</button>
+                            <button class="action-btn complete-btn" data-service="cashier" data-action="complete">Complete Service</button>
+                            <button class="action-btn reset-btn" data-service="cashier" data-action="reset">Reset Queue</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="queue-card" id="clinic-queue-card">
+                    <h3>Clinic Queue</h3>
+                    <div class="queue-status">
+                        <div class="queue-status-item">
+                            Now Serving:
+                            <span class="queue-status-value serving-number" id="clinic-now-serving">---</span>
+                        </div>
+                        <div class="queue-status-item">
+                            Total Waiting:
+                            <span class="queue-status-value waiting-count" id="clinic-total-waiting">0</span>
+                        </div>
+                        <div class="queue-status-item">
+                            Served Today:
+                            <span class="queue-status-value served-count-display" id="clinic-served-count">0</span>
+                        </div>
+                        </div>
+                    <div class="waiting-list">
+                        <h4>Waiting Line:</h4>
+                        <ul id="clinic-waiting-list">
+                            <li class="no-waiting">No one in the waiting line.</li>
+                        </ul>
+                    </div>
+                    <div class="quick-actions">
+                        <h4>Quick Actions</h4>
+                        <div class="action-buttons">
+                            <button class="action-btn serve-next-btn" data-service="clinic" data-action="serve">Serve Next</button>
+                            <button class="action-btn complete-btn" data-service="clinic" data-action="complete">Complete Service</button>
+                            <button class="action-btn reset-btn" data-service="clinic" data-action="reset">Reset Queue</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="queue-card" id="library-queue-card">
+                    <h3>Library Queue</h3>
+                    <div class="queue-status">
+                        <div class="queue-status-item">
+                            Now Serving:
+                            <span class="queue-status-value serving-number" id="library-now-serving">---</span>
+                        </div>
+                        <div class="queue-status-item">
+                            Total Waiting:
+                            <span class="queue-status-value waiting-count" id="library-total-waiting">0</span>
+                        </div>
+                        <div class="queue-status-item">
+                            Served Today:
+                            <span class="queue-status-value served-count-display" id="library-served-count">0</span>
+                        </div>
+                        </div>
+                    <div class="waiting-list">
+                        <h4>Waiting Line:</h4>
+                        <ul id="library-waiting-list">
+                            <li class="no-waiting">No one in the waiting line.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <h4>Quick Actions</h4>
+                        <div class="action-buttons">
+                            <button class="action-btn serve-next-btn" data-service="library" data-action="serve">Serve Next</button>
+                            <button class="action-btn complete-btn" data-service="library" data-action="complete">Complete Service</button>
+                            <button class="action-btn reset-btn" data-service="library" data-action="reset">Reset Queue</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+     <footer>
+        <p>&copy; 2025 Emilio Aguinaldo College - Cavite | NEXTUP Queue System</p>
+    </footer>
+
+   <script>
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDNuFnE-K85NBrOrIISzLSq9ie4OhnmCuw", 
+    authDomain: "nextup-88c61.firebaseapp.com",
+    projectId: "nextup-88c61"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+const adminEmailSuffix = "@eac.edu.ph";
+
+const SERVICE_PREFIXES = {
+    'registrar': 'REG',
+    'guidance': 'GUI',
+    'it_office': 'IT',
+    'cashier': 'CASH', 
+    'clinic': 'CLI', 
+    'library': 'LIB' 
+};
+
+function formatQueueId(serviceId, number) {
+    const prefix = SERVICE_PREFIXES[serviceId.toLowerCase()] || 'Q'; 
+    const paddedNumber = String(number).padStart(3, '0');
+    return `${prefix}${paddedNumber}`;
+}
+
+function renderQueueData(serviceId, data) {
+
+    const nowServingEl   = document.getElementById(`${serviceId}-now-serving`);
+    const waitingCountEl = document.getElementById(`${serviceId}-total-waiting`);
+    const servedCountEl  = document.getElementById(`${serviceId}-served-count`); 
+    const waitingListEl  = document.getElementById(`${serviceId}-waiting-list`);
+    
+    const serving = data.find(d => d.status === "serving");
+    const waiting = data.filter(d => d.status === "waiting").sort((a, b) => a.queueNumber - b.queueNumber);
+    const done    = data.filter(d => d.status === "done");
+    
+    if (serving) {
+        const formattedNumber = formatQueueId(serviceId, serving.queueNumber);
+        const namePart = serving.fullName ? `${serving.fullName}` : '';
+        const studentIdPart = serving.studentId ? ` (${serving.studentId})` : '';
+        
+    
+        nowServingEl.textContent = `${formattedNumber} ${namePart}${studentIdPart}`;
+        nowServingEl.classList.remove("serving-none");
+    } else {
+        nowServingEl.textContent = "---";
+        nowServingEl.classList.add("serving-none");
+    }
+
+   
+    waitingCountEl.textContent = waiting.length;
+
+  
+    if (servedCountEl) {
+        servedCountEl.textContent = done.length;
+    }
+
+    
+    waitingListEl.innerHTML = "";
+    if (waiting.length === 0) {
+        waitingListEl.innerHTML =
+            `<li class="no-waiting">No one in the waiting line.</li>`;
+    } else {
+        waiting
+            .forEach(item => {
+                const li = document.createElement("li");
+                const formattedNumber = formatQueueId(serviceId, item.queueNumber);
+                const nameDisplay = item.fullName || "N/A"; 
+                
+
+                li.textContent = `${formattedNumber} - ${nameDisplay}`;
+                waitingListEl.appendChild(li);
+            });
+    }
+}
+
+
+function loadServiceQueueData(serviceId) {
+    db.collection(`queues/${serviceId}/waitingList`)
+      .onSnapshot(snapshot => {
+          const data = snapshot.docs.map(doc => ({
+              id: doc.id,
+              ...doc.data()
+          }));
+          renderQueueData(serviceId, data);
+      });
+}
+
+async function updateQueueState(serviceId, action) {
+
+    if (!confirm(`Are you sure you want to ${action} the ${serviceId.toUpperCase()} queue?`)) return;
+
+    const collectionRef = db.collection(`queues/${serviceId}/waitingList`);
+
+    try {
+        if (action === "serve") {
+            let servingDocIdToComplete = null;
+
+            const servingSnapshot = await collectionRef
+                .where('status', '==', 'serving')
+                .limit(1)
+                .get();
+
+            if (!servingSnapshot.empty) {
+                servingDocIdToComplete = servingSnapshot.docs[0].id;
+                
+                await collectionRef.doc(servingDocIdToComplete).update({
+                    status: 'done',
+                    completedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+         
+            const waitingSnapshot = await collectionRef
+                .where('status', '==', 'waiting')
+                .orderBy('queueNumber', 'asc') 
+                .limit(1)
+                .get();
+
+            if (waitingSnapshot.empty) {
+                if (!servingDocIdToComplete) alert("The queue is empty. No one to serve next.");
+                return;
+            }
+
+            const nextCustomerDoc = waitingSnapshot.docs[0];
+            const queueNum = nextCustomerDoc.data().queueNumber;
+
+            await nextCustomerDoc.ref.update({
+                status: 'serving',
+                servedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            alert(`Serving next: ${formatQueueId(serviceId, queueNum)} - ${nextCustomerDoc.data().fullName}`);
+        }
+
+        if (action === "complete") {
+            let servingDocIdToComplete = null;
+            
+            const servingSnapshot = await collectionRef
+                .where('status', '==', 'serving')
+                .limit(1)
+                .get();
+                
+            if (!servingSnapshot.empty) {
+                servingDocIdToComplete = servingSnapshot.docs[0].id;
+            }
+
+            if (!servingDocIdToComplete) {
+                alert("No one is currently being served to complete.");
+                return;
+            }
+
+            await collectionRef.doc(servingDocIdToComplete).update({
+                status: 'done',
+                completedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            alert(`${serviceId.toUpperCase()} service completed.`);
+        }
+
+        if (action === "reset") {
+            const allItems = await collectionRef.get();
+            const deletePromises = allItems.docs.map(doc => doc.ref.delete());
+            await Promise.all(deletePromises); 
+            
+            alert(`${serviceId.toUpperCase()} queue has been completely reset.`);
+        }
+
+    } catch (e) {
+        console.error(`Error performing action ${action} on ${serviceId}:`, e);
+        alert(`Failed to perform action '${action}'. Check console and security rules.`);
+    }
+}
+
+document.querySelectorAll(".action-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        
+        updateQueueState(btn.dataset.service, btn.dataset.action);
+    });
+});
+
+
+window.onload = () => {
+    auth.onAuthStateChanged(user => {
+       
+        if (!user || (user.email && !user.email.endsWith(adminEmailSuffix))) {
+            window.location.href = "login.html"; 
+            return;
+        }
+
+        document.getElementById("adminEmailDisplay")
+            .textContent = `Logged in as: ${user.email}`;
+
+        
+        ["registrar","guidance","it_office","cashier","clinic","library"]
+            .forEach(loadServiceQueueData);
+    });
+
+    document.getElementById("logoutLink").onclick = e => {
+        e.preventDefault();
+        auth.signOut();
+        window.location.href = "login.html";
+    };
+};
+</script>
+
+
+</body>
+</html>
