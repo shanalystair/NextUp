@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email.matches(".*@eac\\.edu\\.ph$");
+    }
+
+    match /{serviceId}/{queueDocId} {
+      
+      allow read: if true;
+      
+      allow create: if request.auth != null; 
+    
+      allow update, delete: if isAdmin();
+    }
+  
+    match /queues/{serviceId}/waitingList/{queueDocId} {
+      allow read: if true; 
+      
+      allow create: if true; 
+      
+      allow update: if (
+        request.resource.data.keys().hasOnly(['status', 'completedAt', 'servedAt', 'studentId', 'fullName', 'queueNumber', 'joinedAt', 'serviceId']) 
+        && request.resource.data.studentId == resource.data.studentId
+        && request.resource.data.fullName == resource.data.fullName
+        && request.resource.data.queueNumber == resource.data.queueNumber
+        && request.resource.data.joinedAt == resource.data.joinedAt
+        && request.resource.data.serviceId == resource.data.serviceId
+      );
+      
+      allow delete: if false; 
+    }
+  }
+}
